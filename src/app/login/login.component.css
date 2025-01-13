@@ -1,0 +1,130 @@
+.Login-page{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 97vh; /* ทำให้ครอบคลุมความสูงของหน้าจอ */
+  background-color: #e3f2fd;
+}
+/* กรอบ */
+.center-form {
+  background-color: #f0f5f8; 
+  padding: 2rem; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+  max-width: 400px; 
+  margin: 20px auto; 
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+ 
+ .login-user {
+   margin-top: 10px;
+   font-size: 25px;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   text-align: center; 
+ }
+ 
+ .brand-logo {
+   display: block;
+   width: 120px; 
+   height: auto;
+ }
+ 
+
+.Login {
+   font-size: 13pt;
+   margin-bottom: 20px;
+   text-align: center;
+ }
+ 
+ .center-form {
+   display: flex;
+   flex-direction: column;
+   gap: 1.5rem; 
+   align-items: center; 
+ }
+ 
+ .form-group {
+   display: flex;
+   flex-direction: column; 
+   width: 300px; 
+ }
+ 
+ label {
+   margin-bottom: 0.5rem; 
+   font-size: 1.2rem;
+   text-align: left; 
+ }
+ 
+ input {
+   padding: 0.5rem;
+   font-size: 1rem;
+   border: 1.5px solid #ccc;
+   border-radius: 4px;
+   box-sizing: border-box;
+   width: 100%; 
+ }
+ 
+ .btn {
+   padding: 0.75rem 1rem;
+   font-size: 1rem;
+   background-color: #007bff;
+   color: white;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+ }
+ 
+ .btn:hover {
+   background-color: #0056b3;
+ }
+
+ .text-muted {
+   color: #6c757d; 
+}
+
+#Signup {
+   color: #007bff; 
+   text-decoration: none; 
+}
+
+#Signup:hover {
+   text-decoration: underline; 
+}
+.error-message {
+  color: red; 
+  font-size: 0.875rem; 
+  margin-top: 0.25rem; 
+  text-align: left; 
+}
+
+/* password css */
+.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+input {
+  flex: 1;
+  padding-right: 40px; 
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #6c757d;
+}
+
+.toggle-password i {
+  pointer-events: none;
+}

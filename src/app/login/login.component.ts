@@ -112,8 +112,8 @@ export class LoginComponent implements OnInit {
       return;
     }
   
-    this.http.post<{ token: string; user: any }>(
-      'http://172.16.100.174:3000/login', 
+    this.http.post<any>(
+      'http://172.16.100.174:3000/loginUSER', 
       {
         email: this.email,
         password: this.password,
@@ -121,13 +121,12 @@ export class LoginComponent implements OnInit {
     ).subscribe({
       next: (response) => {
         // บันทึก token และเปลี่ยนหน้า
-        localStorage.setItem('token', response.token);
-        alert('Login successful!');
+        alert(response.message);
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         console.error('Login error:', err);
-        alert('Login failed. Please check your credentials.');
+        alert(err.error.error || 'Login failed. Please check your credentials.');
       }
     });
   }

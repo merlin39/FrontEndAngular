@@ -1,17 +1,26 @@
-import { Component,OnInit  } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule,RouterLink,FormsModule], 
+  imports: [CommonModule, RouterLink, FormsModule, HttpClientModule],
   template: `
+<div class="Login-page">
+  <!-- ฝั่งซ้าย -->
+  <div class="left-section">
+    <h1>Welcome to the forms!</h1>
+    <img class="bralogond-" src="/assets/betime.png" alt="Brand Logo">
+  </div>
+
+  <!-- ฝั่งขวา -->
+  <div class="right-section">
     <header class="login-user">
       <h2 class="login-name">Login</h2>
-      <img class="brand-logo" src="/assets/wel.png" alt="logo" aria-hidden="true">
     </header>
     <section class="Login">
       <form class="center-form" (submit)="onLogin($event)">
@@ -30,31 +39,35 @@ import { Router } from '@angular/router';
 
         <div class="form-group">
           <label for="password">Password</label>
-        <div class="password-container">
-         <input
-             id="password"
-             [type]="showPassword ? 'text' : 'password'"
-             [(ngModel)]="password"
-            name="password"
-            placeholder="Enter your password"
-            required
-         />
-       <button
-        type="button" (click)="togglePasswordVisibility()" class="toggle-password" aria-label="Toggle password visibility" >
-        <i [class]="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
-      </button>
-  </div>
-  <div *ngIf="passwordError" class="error-message">{{ passwordError }}</div>
-</div>
+          <div class="password-container">
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              [(ngModel)]="password"
+              name="password"
+              placeholder="Enter your password"
+              required
+            />
+            <button
+              type="button" 
+              (click)="togglePasswordVisibility()" 
+              class="toggle-password" 
+              aria-label="Toggle password visibility">
+              <i [class]="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
+            </button>
+          </div>
+          <div *ngIf="passwordError" class="error-message">{{ passwordError }}</div>
+        </div>
 
-
-        <button type="submit" class="btn">Login</button>
+        <button type="submit" routerLink="/dashboard" class="btn">Login</button>
         <div class="text-center pt-4 text-muted">
           Don't have an account?
           <a id="Signup" routerLink="/register">Sign Up</a>
         </div>
       </form>
     </section>
+  </div>
+</div>
   `,
   styleUrls: ['./login.component.css']
 })
@@ -64,14 +77,19 @@ export class LoginComponent implements OnInit {
   emailError: string | null = null;
   passwordError: string | null = null;
   showPassword: boolean = false;
-  
-  constructor(private router: Router) {}
+
+  constructor(private router: Router, private http: HttpClient) {}
 
   ngOnInit(): void {
-    // รีเซ็ตหน้าทุกครั้ง
+    // ตรวจสอบการเข้าสู่ระบบก่อนหน้า
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.router.navigate(['/dashboard']);
+    }
     this.email = '';
     this.password = '';
   }
+
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword; 
   }
@@ -83,7 +101,10 @@ export class LoginComponent implements OnInit {
   
     if (!this.email) {
       this.emailError = 'Please enter your email!';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email)) {
+      this.emailError = 'Invalid email format!';
     }
+  
     if (!this.password) {
       this.passwordError = 'Please enter your password!';
     }
@@ -91,14 +112,13 @@ export class LoginComponent implements OnInit {
     if (this.emailError || this.passwordError) {
       return;
     }
-  
-    if (this.email === 'test@gmail.com' && this.password === 'pass1111') {
-      this.router.navigate(['/dashboard']);
-    } else {
-      alert('Invalid email or password!');
-  
-      this.email = '';
-      this.password = '';
-    }
+    this.http.post<{ message: string; user: any }>(
+      'http://172.16.100.174:3000/login', 
+      {
+        email: this.email,
+        password: this.password,
+      }
+    )
+    
   }
 }  

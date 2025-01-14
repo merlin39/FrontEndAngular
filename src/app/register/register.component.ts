@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule,RouterLink,FormsModule],
+  imports: [CommonModule,RouterLink, FormsModule, HttpClientModule],
   template: `
   <header class="regis-user">
     <h2 class="login-name">Create Account</h2>
@@ -64,14 +65,13 @@ export class RegisterComponent {
   passwordError: string | null = null;
   showPassword: boolean = false;
   
-
-  constructor(private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {}
+  
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword; 
   }
   onSubmit(event: Event) {
     event.preventDefault();
-    
   
     // Reset errors
     this.firstNameError = null;
@@ -102,8 +102,25 @@ export class RegisterComponent {
       return;
     }
   
-    // Registration success
-    alert('Registration successful!');
-    this.router.navigate(['/login']);
+    // Create payload
+    const payload = {
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email,
+      password: this.password
+    };
+  
+    // Send POST request
+    this.http.post('http://172.16.100.174:3000/register', payload).subscribe({
+      next: (response) => {
+        alert('Registration successful!');
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Registration failed. Please try again later.');
+      }
+    });
   }
+  
 }  

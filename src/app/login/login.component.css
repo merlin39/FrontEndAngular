@@ -1,101 +1,123 @@
-.Login-page{
+/* Container หลัก */
+.Login-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* แบ่งเป็น 2 คอลัมน์ */
+  min-height: 100vh;
+  background-color: #021627f0;
+}
+
+/* ฝั่งซ้าย */
+.left-section {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  min-height: 97vh; /* ทำให้ครอบคลุมความสูงของหน้าจอ */
-  background-color: #e3f2fd;
+  align-items: center;
+  text-align: center;
+  background-color: #CC6D3D;
+  color: white;
+  padding: 20px;
 }
-/* กรอบ */
+
+.left-section h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.left-section p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.brand-logo {
+  display: block;
+  width: auto;
+  height: auto;
+  margin-top: 10px;
+}
+
+/* ฝั่งขวา */
+.right-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+}
+
 .center-form {
-  background-color: #f0f5f8; 
+  background-color: white; 
   padding: 2rem; 
   border-radius: 8px; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
-  max-width: 400px; 
-  margin: 20px auto; 
+  max-width: auto; 
+  margin: 37px auto; 
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
- 
- .login-user {
-   margin-top: 10px;
-   font-size: 25px;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   text-align: center; 
- }
- 
- .brand-logo {
-   display: block;
-   width: 120px; 
-   height: auto;
- }
- 
+.login-user {
+  margin-top: 20px;
+  font-size: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center; 
+  color: white;
+}
 
 .Login {
-   font-size: 13pt;
-   margin-bottom: 20px;
    text-align: center;
- }
- 
- .center-form {
-   display: flex;
-   flex-direction: column;
-   gap: 1.5rem; 
-   align-items: center; 
- }
- 
- .form-group {
-   display: flex;
-   flex-direction: column; 
-   width: 300px; 
- }
- 
- label {
-   margin-bottom: 0.5rem; 
-   font-size: 1.2rem;
-   text-align: left; 
- }
- 
- input {
-   padding: 0.5rem;
-   font-size: 1rem;
-   border: 1.5px solid #ccc;
-   border-radius: 4px;
-   box-sizing: border-box;
-   width: 100%; 
- }
- 
- .btn {
-   padding: 0.75rem 1rem;
-   font-size: 1rem;
-   background-color: #007bff;
-   color: white;
-   border: none;
-   border-radius: 4px;
-   cursor: pointer;
- }
- 
- .btn:hover {
-   background-color: #0056b3;
- }
+}
 
- .text-muted {
-   color: #6c757d; 
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: auto;
+}
+
+label {
+  margin-bottom: 0.5rem; 
+  font-size: 1.2rem;
+  text-align: left; 
+}
+
+input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1.5px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  width: auto; 
+}
+
+.btn {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+.text-muted {
+  color: #6c757d; 
 }
 
 #Signup {
-   color: #007bff; 
-   text-decoration: none; 
+  color: #007bff; 
+  text-decoration: none; 
 }
 
 #Signup:hover {
-   text-decoration: underline; 
+  text-decoration: underline; 
 }
+
 .error-message {
   color: red; 
   font-size: 0.875rem; 
@@ -103,7 +125,7 @@
   text-align: left; 
 }
 
-/* password css */
+/* Password Container */
 .password-container {
   position: relative;
   display: flex;

@@ -1,0 +1,120 @@
+/* Header Section */
+.dash-front {
+   display: flex;
+   align-items: center;
+   justify-content: flex-start;
+   width: auto;
+   padding: 5px 20px;
+   background: linear-gradient(to right, #d4e1f2, #1f4b72, #072641);
+ }
+ 
+ .logo-form {
+   max-width: 120px;
+   height: auto;
+   margin-right: 10px;
+ }
+ 
+ .dash-front span {
+   font-size: 35px;
+   font-weight: bold;
+   color: white;
+   text-shadow: 1px 1px 2px #333;
+   margin-left: 10px;
+ }
+ 
+ /* Navigation Menu */
+ .nav-menu {
+   display: flex;
+   margin-left: auto;
+   margin-right: auto;
+   
+   
+ }
+ 
+ .nav-menu ul {
+   list-style: none;
+   margin: 0;
+   padding: 0;
+   display: flex;
+   gap: 10px;
+ }
+ 
+ .nav-menu ul li {
+   display: inline-block;
+ }
+ 
+ .nav-menu ul li a {
+   text-decoration: none;
+   color: white;
+   font-size: 20px;
+   font-weight: bold;
+   padding: 5px 10px;
+   transition: color 0.2s ease, background-color 0.3s ease;
+ }
+ 
+ .nav-menu ul li a:hover {
+   color: #283467;
+   background-color: #cc6d3d;
+   border-radius: 5px;
+ }
+ 
+ /* Hamburger Menu */
+ .menu-toggle {
+   display: none;
+   
+   font-size: 24px;
+   margin-left: auto;
+   background: none;
+   border: none;
+   color: white;
+   cursor: pointer;
+ }
+ 
+ /* Responsive Design */
+ @media (max-width: 768px) {
+   .nav-menu {
+     display: none;
+     position: absolute;
+     top: 80px;
+     right: 10px;
+     background: #1f4b72;
+     width: calc(100% - 20px);
+     flex-direction: column;
+     align-items: center;
+     padding: 10px 0;
+     z-index: 1000;
+     border-radius: 8px;
+     transition: transform 0.3s ease;
+   }
+ 
+   .nav-menu.active {
+     display: flex;
+     
+   }
+   .nav-menu ul {
+      display: flex;
+      flex-direction: column;
+      width: 100%; 
+    }
+ 
+   .nav-menu ul li {
+     width: 100%;
+     text-align: center;
+   }
+ 
+   .nav-menu ul li a {
+     font-size: 18px;
+     padding: 10px 20px;
+     display: block;
+   }
+   .nav-menu ul li a:hover {
+      background-color: #cc6d3d;
+      border-radius: 5px;
+    }
+    
+ 
+   .menu-toggle {
+     display: block;
+   }
+ }
+ 

@@ -59,7 +59,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
           <div *ngIf="passwordError" class="error-message">{{ passwordError }}</div>
         </div>
 
-        <button type="submit" routerLink="/dashboard" class="btn">Login</button>
+        <button type="submit" class="btn">Login</button>
         <div class="text-center pt-4 text-muted">
           Don't have an account?
           <a id="Signup" routerLink="/register">Sign Up</a>
@@ -81,18 +81,17 @@ export class LoginComponent implements OnInit {
   constructor(private router: Router, private http: HttpClient) {}
 
   ngOnInit(): void {
-    // ตรวจสอบการเข้าสู่ระบบก่อนหน้า
+    // ตรวจสอบสถานะการเข้าสู่ระบบ
     const token = localStorage.getItem('token');
     if (token) {
       this.router.navigate(['/dashboard']);
     }
-    this.email = '';
-    this.password = '';
   }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword; 
   }
+
   onLogin(event: Event) {
     event.preventDefault();
   
@@ -112,13 +111,24 @@ export class LoginComponent implements OnInit {
     if (this.emailError || this.passwordError) {
       return;
     }
-    this.http.post<{ message: string; user: any }>(
+  
+    this.http.post<{ token: string; user: any }>(
       'http://172.16.100.174:3000/login', 
       {
         email: this.email,
         password: this.password,
       }
-    )
-    
+    ).subscribe({
+      next: (response) => {
+        // บันทึก token และเปลี่ยนหน้า
+        localStorage.setItem('token', response.token);
+        alert('Login successful!');
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        console.error('Login error:', err);
+        alert('Login failed. Please check your credentials.');
+      }
+    });
   }
-}  
+}

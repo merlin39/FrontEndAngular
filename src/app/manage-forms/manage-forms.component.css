@@ -1,0 +1,147 @@
+/* page */
+.sidenav-container {
+   height: 100vh;
+ }
+ /* จัดอยู่ตรงกลาง */
+.toolbar {
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
+}
+
+.toolbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;  
+}
+/* manage */
+.title {
+  font-size: 20px; 
+  text-align: center;
+  flex-grow: 1;
+  font-size: 24px; 
+  font-weight: bold; 
+  color: #041043c1; 
+}
+ /* Forms */
+ .sidenav {
+   width: 250px;
+   background: linear-gradient(to bottom, #dce5f0, #457fb3, #245783, #072641);
+   text-align: center;
+   font-size: 24px;
+   color: #041043c1;
+ }
+ /* ตาราง */
+ .content-container {
+   margin: 0;
+   display: flex;
+   flex-direction: column;
+   
+   height: 100%;
+   padding: 16px;
+   overflow: auto; 
+ }
+ /* ตาราง */
+ .table-container {
+  background: rgb(218, 216, 216);
+  margin-top: 20px;
+  border-radius: 9px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+ 
+.logo-form {
+  display: block; 
+  margin: 0 auto; 
+  max-width: 150px; 
+  height: auto;
+}
+/* ค้นหา */
+.search-container {
+  display: flex;
+  justify-content: center; 
+  align-items: center;    
+  margin: 16px 0;       
+  width: 100%;         
+}
+
+.search-field {
+  width: 50%;            
+  text-align: center;   
+}
+
+
+/*  */
+.menu-list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-direction: column; 
+}
+
+.menu-list li {
+  margin: 8px 10px;
+  text-align: center;
+ 
+}
+
+.menu-list li a {
+  text-decoration: none;
+  color: white;
+  font-size: 18px;
+  display: block;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+} 
+
+.menu-list li a:hover {
+  background-color: #CC6D3D; 
+  border-radius: 15px;
+  box-sizing: border-box; 
+  transition: all 0.3s ease;
+}
+.menu-list li a.active {
+  background-color: #CC6D3D; 
+  border-radius: 15px; 
+  box-sizing: border-box;
+  color: white; 
+  font-weight: bold; 
+}
+/* เมนูย่อย */
+.submenu {
+  list-style: none;
+  margin: 0 auto; 
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  width: 180px; 
+  text-align: center;
+  visibility: hidden; 
+  transition: max-height 2s ease, visibility 0.4s ease;
+}
+
+.submenu.show {
+  max-height: 500px;
+  padding: 5px;
+  visibility: visible;
+}
+
+
+.submenu li a {
+  text-decoration: none;
+  color: white;
+  display: block;
+  font-size: 15px; 
+  padding: 5px; 
+  border: none; 
+}
+
+.submenu li a:hover {
+  border-radius: 4px;
+}

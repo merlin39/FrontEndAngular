@@ -4,12 +4,11 @@ const app = express();
 
 // เปิดใช้งาน CORS
 app.use(cors({
-  origin: 'http://localhost:4200', // หรือ '*' หากต้องการอนุญาตทุก origin
+  origin: 'http://localhost:4200', 
   methods: 'GET,POST,PUT,DELETE,OPTIONS',
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// จัดการ preflight request (OPTIONS)
 app.options('*', (req, res) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
@@ -17,12 +16,26 @@ app.options('*', (req, res) => {
   res.sendStatus(200);
 });
 
-// // ตัวอย่าง endpoint
-// app.post('/login', (req, res) => {
-//   res.json({
-//     token: 'example-token',
-//     user: { id: 1, name: 'John Doe', email: 'user@example.com' }
-//   });
-// });
+//สำหรับแปลง JSON
+app.use(express.json());
 
+
+app.post('/register', (req, res) => {
+  const { firstName, lastName, email, password } = req.body;
+
+  if (!f_Name || !l_Name || !email || !password) {
+    return res.status(400).json({ message: 'All fields are required.' });
+  }
+  res.json({ message: 'User registered successfully.' });
+});
+
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required.' });
+  }
+
+ 
+});
 app.listen(3000, () => console.log('Server running on port 3000'));

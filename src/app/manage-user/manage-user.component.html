@@ -1,0 +1,109 @@
+<mat-sidenav-container class="sidenav-container">
+   <!-- Sidebar -->
+   <mat-sidenav #sidenav [mode]="'side'"  
+   [opened]="!isSmallScreen "
+   class="sidenav">
+     <nav>
+       <div class="sidebar-header">
+         <img
+           class="logo-form"
+           src="assets/betime2.png"
+           alt="logo"
+           aria-hidden="true" />
+         <h3 class="F">Forms</h3>
+       </div>
+       <ul class="menu-list">
+        <li><a href="dashboard">Dashboard</a></li>
+        <li>
+          <a (click)="toggleSubmenu('components')" class="menu-item">
+            <span>Management</span>
+            <i [class.rotate]="activeMenu === 'components'" class="arrow-icon">▼</i>
+          </a>
+          <ul class="submenu" [class.show]="activeMenu === 'components'">
+            <li><a href="manage-user">User</a></li>
+            <li><a href="manage-forms">Forms</a></li>
+          </ul>
+        </li>
+        
+        
+        <li><a href="reports">Reports</a></li>
+        <li><a href="settings">Settings</a></li>
+      </ul>
+     </nav>
+   </mat-sidenav>
+ 
+   <!-- Main Content -->
+   <mat-sidenav-content class="content-container">
+    <mat-toolbar color="primary" class="toolbar">
+      <div class="toolbar-container">
+        <button 
+          mat-icon-button 
+          (click)="toggleSidebar()" 
+          *ngIf="isSmallScreen">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span class="title">Management (User)</span>
+      </div>
+    </mat-toolbar>
+    
+     <div class="content">
+       <div class="table-container">
+
+         <!-- Search Field -->
+         <div class="search-container">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>ค้นหา</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="ค้นหา" />
+          </mat-form-field>
+        </div>        
+ 
+         <!-- Table -->
+         <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+           <ng-container matColumnDef="id">
+             <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+             <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+           </ng-container>
+ 
+           <ng-container matColumnDef="name">
+             <th mat-header-cell *matHeaderCellDef mat-sort-header>ชื่อ</th>
+             <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+           </ng-container>
+ 
+           <ng-container matColumnDef="email">
+             <th mat-header-cell *matHeaderCellDef mat-sort-header>อีเมล</th>
+             <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+           </ng-container>
+ 
+           <ng-container matColumnDef="status">
+             <th mat-header-cell *matHeaderCellDef mat-sort-header>สถานะ</th>
+             <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+           </ng-container>
+ 
+           <ng-container matColumnDef="actions">
+             <th mat-header-cell *matHeaderCellDef>ดำเนินการ</th>
+             <td mat-cell *matCellDef="let element">
+               <button mat-icon-button color="primary" (click)="edit(element)">
+                 <mat-icon>edit</mat-icon>
+               </button>
+               <button mat-icon-button color="warn" (click)="delete(element)">
+                 <mat-icon>delete</mat-icon>
+               </button>
+             </td>
+           </ng-container>
+ 
+           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+         </table>
+ 
+         <!-- Paginator -->
+         <mat-paginator
+           [pageSize]="5"
+           [pageSizeOptions]="[5, 10, 15]"
+           showFirstLastButtons>
+         </mat-paginator>
+       </div>
+     </div>
+   </mat-sidenav-content>
+ </mat-sidenav-container>
+
+  

@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -19,9 +21,9 @@ import { FormsModule } from '@angular/forms';
           <span>Forms</span>
           <nav class="nav-menu" [class.active]="isMenuOpen">
             <ul>
-              <li><a href="#">Dashboard</a></li>
-              <li><a href="#">Forms</a></li>
-              <li><a href="#">Reports</a></li>
+              <li><a href="dashboard">Dashboard</a></li>
+              <li><a href="manage">Management</a></li>
+              <li><a href="manage-user">Reports</a></li>
               <li><a href="#">Settings</a></li>
             </ul>
           </nav>

@@ -8,7 +8,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule,RouterLink, FormsModule, HttpClientModule],
+  imports: [CommonModule,RouterLink,FormsModule,HttpClientModule],
   template: `
   <header class="regis-user">
     <h2 class="login-name">Create Account</h2>
@@ -66,7 +66,7 @@ export class RegisterComponent {
   showPassword: boolean = false;
   
   constructor(private http: HttpClient, private router: Router) {}
-  
+
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword; 
   }
@@ -82,19 +82,25 @@ export class RegisterComponent {
     // Validate fields
     if (!this.firstName.trim()) {
       this.firstNameError = 'First Name is required!';
+      alert(this.firstNameError);
     }
     if (!this.lastName.trim()) {
       this.lastNameError = 'Last Name is required!';
+      alert(this.lastNameError);
     }
     if (!this.email.trim()) {
       this.emailError = 'Email is required!';
-    } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(this.email)) {
+      alert(this.emailError);
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email)) {
       this.emailError = 'Invalid email format!';
+      alert(this.emailError);
     }
     if (!this.password.trim()) {
       this.passwordError = 'Password is required!';
+      alert(this.passwordError);
     } else if (this.password.length < 6) {
       this.passwordError = 'Password must be at least 6 characters!';
+      alert(this.passwordError);
     }
   
     // If any errors exist, stop
@@ -104,23 +110,30 @@ export class RegisterComponent {
   
     // Create payload
     const payload = {
-      firstName: this.firstName,
-      lastName: this.lastName,
+      f_name: this.firstName,
+      l_name: this.lastName,
       email: this.email,
       password: this.password
     };
   
-    // Send POST request
+    // Debugging the payload (optional)
+    console.log('Payload:', payload);
+  
+    // Send POST request to the server
     this.http.post('http://172.16.100.174:3000/register', payload).subscribe({
       next: (response) => {
+        console.log('Response:', response);
         alert('Registration successful!');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/login']); // Navigate to the login page
       },
       error: (err) => {
-        console.error(err);
-        alert('Registration failed. Please try again later.');
+        console.error('Error:', err);
+        if (err.status === 400) {
+          alert('Registration failed: Please check your input.');
+        } else {
+          alert('Registration failed: Server error. Please try again later.');
+        }
       }
     });
   }
-  
 }  

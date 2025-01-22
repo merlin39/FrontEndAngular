@@ -14,10 +14,22 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSidenav } from '@angular/material/sidenav';
+import { HttpClient } from '@angular/common/http';
+import { ChangeDetectionStrategy } from '@angular/core';
 
+
+interface User {
+  user_id: number;
+  f_name: string;
+  l_name: string;
+  email: string;
+  created_at: string;
+  status: number;
+}
 
 @Component({
   selector: 'app-manage-user',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatToolbarModule,
     MatSidenavModule,
@@ -28,49 +40,67 @@ import { MatSidenav } from '@angular/material/sidenav';
   templateUrl: './manage-user.component.html',
   styleUrl: './manage-user.component.css'
 })
-export class ManageUserComponent {
-  isOpened = true; // สถานะของ Sidebar
+export class ManageUserComponent implements OnInit {
+  isOpened = true;
   displayedColumns: string[] = ['id', 'name', 'email', 'status', 'actions'];
-  dataSource = new MatTableDataSource([
-    { id: 1, name: 'John Doe', age: 30, status: 'Active' },
-  { id: 2, name: 'Jane Smith', age: 25, status: 'Inactive' },
-  { id: 3, name: 'Emily Davis', age: 35, status: 'Pending' },
-  { id: 4, name: 'Michael Johnson', age: 40, status: 'Active' },
-  { id: 5, name: 'Sarah Wilson', age: 45, status: 'Inactive' },
-  { id: 6, name: 'Chris Brown', age: 28, status: 'Active' },
-  { id: 7, name: 'Anna Taylor', age: 32, status: 'Pending' },
-  { id: 8, name: 'James Williams', age: 39, status: 'Inactive' },
-  { id: 9, name: 'Robert Miller', age: 50, status: 'Active' },
-  { id: 10, name: 'Laura Wilson', age: 27, status: 'Pending' },
-    // เพิ่มข้อมูลเพิ่มเติมตามต้องการ
-  ]); 
+  dataSource = new MatTableDataSource<any>([]);
   activeMenu: string | null = null;
-  isSmallScreen = false; 
-
-  constructor(private breakpointObserver: BreakpointObserver) {}
-
+  isSmallScreen = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('sidenav') sidenav!: MatSidenav;
-  
+
+  constructor(private http: HttpClient, private breakpointObserver: BreakpointObserver) {}
 
   ngOnInit(): void {
     this.breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
       this.isSmallScreen = result.matches;
-      
+    });
+
+    this.loadUserData();
+  }
+
+  loadUserData(): void {
+    this.http.get<{ message: string; users: User[] }>('http://172.16.100.187:3000/showuser').subscribe({
+      next: (response) => {
+        // แปลงข้อมูลจาก API ให้เข้ากับคอลัมน์ของตาราง
+        const formattedData = response.users.map(user => ({
+          id: user.user_id,
+          name: `${user.f_name} ${user.l_name}`,
+          email: user.email,
+          status: this.getStatusText(user.status),
+        }));
+
+        this.dataSource.data = formattedData;
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      },
+      error: (error) => {
+        console.error('Error fetching user data:', error);
+      }
     });
   }
 
-  toggleSidebar() {
+  getStatusText(status: number): string {
+    switch (status) {
+      case 1:
+        return 'Active';
+      case 2:
+        return 'Inactive';
+      default:
+        return 'Unknown';
+    }
+  }
+
+  toggleSidebar(): void {
     this.sidenav.toggle();
   }
-  // manage
+
   toggleSubmenu(menu: string): void {
     this.activeMenu = this.activeMenu === menu ? null : menu;
-    
   }
-  
+
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -83,5 +113,4 @@ export class ManageUserComponent {
   delete(element: any): void {
     console.log('Delete:', element);
   }
-
 }

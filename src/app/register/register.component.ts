@@ -8,7 +8,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule,RouterLink,FormsModule,HttpClientModule],
+  imports: [CommonModule,FormsModule,HttpClientModule],
   template: `
   <header class="regis-user">
     <h2 class="login-name">Create Account</h2>

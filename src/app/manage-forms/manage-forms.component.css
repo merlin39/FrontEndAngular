@@ -46,11 +46,13 @@
  }
  /* ตาราง */
  .table-container {
+   max-height: 80vh;
   background: rgb(218, 216, 216);
   margin-top: 20px;
   border-radius: 9px;
   padding: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
 }
  
 .logo-form {
@@ -62,10 +64,13 @@
 /* ค้นหา */
 .search-container {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center; 
   align-items: center;    
   margin: 16px 0;       
-  width: 100%;         
+  width: 100%;     
+  margin-left: 50px;
+  gap: 30px;
 }
 
 .search-field {
@@ -73,6 +78,15 @@
   text-align: center;   
 }
 
+button.mat-raised-button {
+   flex-shrink: 0; 
+   margin-left: 16px;
+   margin-right: 100px;
+   font-weight: bold;
+   align-items: center;
+   padding: 10px 20px; 
+   white-space: nowrap;
+ }
 
 /*  */
 .menu-list {

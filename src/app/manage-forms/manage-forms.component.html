@@ -55,6 +55,12 @@
             <mat-label>ค้นหา</mat-label>
             <input matInput (keyup)="applyFilter($event)" placeholder="ค้นหา" />
           </mat-form-field>
+
+          <!-- ปุ่มเพิ่ม Forms -->
+          <button mat-raised-button color="primary" [routerLink]="'/forms'">
+            <mat-icon>add</mat-icon> เพิ่ม
+          </button>
+
         </div>        
  
          <!-- Table -->

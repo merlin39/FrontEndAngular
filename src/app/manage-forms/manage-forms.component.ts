@@ -14,11 +14,16 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSidenav } from '@angular/material/sidenav';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { RouterModule } from '@angular/router';
+
 
 
 @Component({
   selector: 'app-manage-forms',
+   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    RouterModule,
     MatToolbarModule,
     MatSidenavModule,
     MatButtonModule,
@@ -61,10 +66,10 @@ export class ManageFormsComponent {
       
     });
   }
-
   toggleSidebar() {
     this.sidenav.toggle();
   }
+
   // manage
   toggleSubmenu(menu: string): void {
     this.activeMenu = this.activeMenu === menu ? null : menu;

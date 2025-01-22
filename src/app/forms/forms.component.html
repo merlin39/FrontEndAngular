@@ -1,0 +1,73 @@
+<div class="form-header">
+  <span class="back-arrow" (click)="goBack()">&lt;</span>
+  <h1>{{ formTitle }}</h1>
+</div>
+
+<!-- กล่องชื่อแบบฟอร์มและคำอธิบายเพิ่มเติม -->
+<div class="content-area">
+<form [formGroup]="formDetails">
+  <div class="question-container form-header-box">
+    <div class="question-header">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>ชื่อแบบฟอร์ม</mat-label>
+        <input matInput placeholder="กรอกชื่อแบบฟอร์ม" formControlName="formName" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>คำอธิบายเพิ่มเติม</mat-label>
+        <textarea matInput placeholder="กรอกคำอธิบายเพิ่มเติม" formControlName="formDescription"></textarea>
+      </mat-form-field>
+    </div>
+  </div>
+</form>
+</div>
+
+<!-- ฟอร์มหลัก -->
+<form [formGroup]="form">
+  <div *ngFor="let q of questions; let i = index" class="question-container">
+    <div class="question-header">
+      
+      <!-- ช่องใส่คำถาม -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>คำถาม</mat-label>
+        <input matInput placeholder="กรอกคำถาม..." [(ngModel)]="q.question" />
+      </mat-form-field>
+
+      <!-- ช่องใส่ตัวเลือกคำตอบ -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ q.question }}</mat-label>
+        <ng-container [ngSwitch]="q.type">
+          <input *ngSwitchCase="'text'" matInput placeholder="กรอกคำตอบ..." [formControlName]="'answer' + i" />
+
+          <mat-radio-group *ngSwitchCase="'radio'" [formControlName]="'answer' + i">
+            <mat-radio-button *ngFor="let option of q.options" [value]="option">
+              {{ option }}
+            </mat-radio-button>
+          </mat-radio-group>
+        </ng-container>
+      </mat-form-field>
+
+      <!-- Dropdown เปลี่ยนตัวเลือกคำตอบ -->
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+          เปลี่ยนตัวเลือกคำตอบ
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <li><a class="dropdown-item" (click)="changeQuestionType(i, 'checkbox')">มีหลายตัวเลือก</a></li>
+          <li><a class="dropdown-item" (click)="changeQuestionType(i, 'radio')">ทำช่องเครื่องหมาย</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <button mat-stroked-button color="warn" (click)="removeQuestion(i)">
+      ลบคำถามนี้
+    </button>
+  </div>
+
+  <div class="add-question-container">
+    <button mat-raised-button color="primary" (click)="addQuestion()">
+      + เพิ่มคำถาม
+    </button>
+  </div>
+</form>
+

@@ -22,8 +22,8 @@ import { FormsModule } from '@angular/forms';
           <nav class="nav-menu" [class.active]="isMenuOpen">
             <ul>
               <li><a href="dashboard">Dashboard</a></li>
-              <li><a href="manage">Management</a></li>
-              <li><a href="manage-user">Reports</a></li>
+              <li><a href="manage-user">Management</a></li>
+              <li><a href="gigi">Reports</a></li>
               <li><a href="#">Settings</a></li>
             </ul>
           </nav>

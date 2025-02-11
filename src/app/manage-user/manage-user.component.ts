@@ -62,7 +62,7 @@ export class ManageUserComponent implements OnInit {
   }
 
   loadUserData(): void {
-    this.http.get<{ message: string; users: User[] }>('http://172.16.100.187:3000/showuser').subscribe({
+    this.http.get<{ message: string; users: User[] }>('http://192.168.178.168:3000/showuser').subscribe({
       next: (response) => {
         // แปลงข้อมูลจาก API ให้เข้ากับคอลัมน์ของตาราง
         const formattedData = response.users.map(user => ({

@@ -1,0 +1,93 @@
+<mat-sidenav-container class="sidenav-container">
+   <mat-sidenav #sidenav [mode]="isMenuOpen ? 'side' : 'over'" [opened]="isMenuOpen" class="sidenav">
+      <nav>
+         <div class="sidebar-header">
+           <img
+             class="logo-form"
+             src="assets/betime2.png"
+             alt="logo"
+             aria-hidden="true" />
+           <h3 class="F">Forms</h3>
+         </div>
+         <ul class="menu-list">
+          <li><a href="dashboard">Dashboard</a></li>
+          <li>
+            <a (click)="toggleSubmenu('components')" class="menu-item">
+              <span>Management</span>
+              <i [class.rotate]="activeMenu === 'components'" class="arrow-icon">▼</i>
+            </a>
+            <ul class="submenu" [class.show]="activeMenu === 'components'">
+              <li><a href="manage-user">User</a></li>
+              <li><a href="manage-forms">Forms</a></li>
+            </ul>
+          </li>
+          
+          
+          <li><a href="reports">Reports</a></li>
+          <li><a href="settings">Settings</a></li>
+          <li>
+            <a href="javascript:void(0);" (click)="logout()" class="logout-button">Logout</a>
+          </li>        
+          
+        </ul>
+       </nav>
+   </mat-sidenav>
+ 
+   <mat-sidenav-content class="content-container">
+     <mat-toolbar color="primary" class="toolbar">
+       <button mat-icon-button (click)="toggleSidebar()" *ngIf="!isMenuOpen">
+         <mat-icon>menu</mat-icon>
+       </button>
+       <span class="title">Admin Dashboard</span>
+ 
+       <!-- ✅ Profile Menu -->
+       <div class="profile-menu">
+         <button mat-button (click)="toggleProfileMenu()">
+           <mat-icon>account_circle</mat-icon>
+           <span>{{ adminName }}</span>
+           <mat-icon>arrow_drop_down</mat-icon>
+         </button>
+         <div class="dropdown-menu" *ngIf="isProfileMenuOpen">
+           <ul>
+             <li><a routerLink="/profile">Profile</a></li>
+             <li><a routerLink="/settings">Settings</a></li>
+             <li><a (click)="confirmLogout()">Logout</a></li>
+           </ul>
+         </div>
+       </div>
+     </mat-toolbar>
+ 
+     <div class="content">
+       <h1>Welcome to Admin Dashboard</h1>
+ 
+       <div *ngIf="isLoading">Loading...</div>
+       <p *ngIf="!isLoading">Last Updated: {{ lastUpdated }}</p>
+ 
+       <div class="dashboard-cards">
+         <mat-card>
+           <mat-card-title> Users</mat-card-title>
+           <mat-card-content>
+             <ng-container *ngIf="!isLoading">
+               {{ count_user !== null && count_user !== undefined ? count_user + ' users' : 'กำลังโหลด...' }}
+             </ng-container>
+           </mat-card-content>
+         </mat-card>
+ 
+         <mat-card>
+           <mat-card-title> Forms</mat-card-title>
+           <mat-card-content>
+             <ng-container *ngIf="!isLoading">
+               {{ count_form !== null && count_form !== undefined ? count_form + ' Forms' : 'กำลังโหลด...' }}
+             </ng-container>
+           </mat-card-content>
+         </mat-card>
+       </div>
+ 
+       <div class="admin-buttons">
+         <button mat-raised-button color="primary" routerLink="/manage-forms">➕ Add New Quiz</button>
+         <button mat-raised-button color="accent" routerLink="/manage-user">👥 Manage Users</button>
+       </div>
+     </div>
+   </mat-sidenav-content>
+ </mat-sidenav-container>
+ 

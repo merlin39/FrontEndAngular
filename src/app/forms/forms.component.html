@@ -3,71 +3,65 @@
   <h1>{{ formTitle }}</h1>
 </div>
 
-<!-- กล่องชื่อแบบฟอร์มและคำอธิบายเพิ่มเติม -->
 <div class="content-area">
-<form [formGroup]="formDetails">
-  <div class="question-container form-header-box">
-    <div class="question-header">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>ชื่อแบบฟอร์ม</mat-label>
-        <input matInput placeholder="กรอกชื่อแบบฟอร์ม" formControlName="formName" />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>คำอธิบายเพิ่มเติม</mat-label>
-        <textarea matInput placeholder="กรอกคำอธิบายเพิ่มเติม" formControlName="formDescription"></textarea>
-      </mat-form-field>
-    </div>
-  </div>
-</form>
-</div>
-
-<!-- ฟอร์มหลัก -->
-<form [formGroup]="form">
-  <div *ngFor="let q of questions; let i = index" class="question-container">
-    <div class="question-header">
-      
-      <!-- ช่องใส่คำถาม -->
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>คำถาม</mat-label>
-        <input matInput placeholder="กรอกคำถาม..." [(ngModel)]="q.question" />
-      </mat-form-field>
-
-      <!-- ช่องใส่ตัวเลือกคำตอบ -->
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>{{ q.question }}</mat-label>
-        <ng-container [ngSwitch]="q.type">
-          <input *ngSwitchCase="'text'" matInput placeholder="กรอกคำตอบ..." [formControlName]="'answer' + i" />
-
-          <mat-radio-group *ngSwitchCase="'radio'" [formControlName]="'answer' + i">
-            <mat-radio-button *ngFor="let option of q.options" [value]="option">
-              {{ option }}
-            </mat-radio-button>
-          </mat-radio-group>
-        </ng-container>
-      </mat-form-field>
-
-      <!-- Dropdown เปลี่ยนตัวเลือกคำตอบ -->
-      <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-          เปลี่ยนตัวเลือกคำตอบ
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <li><a class="dropdown-item" (click)="changeQuestionType(i, 'checkbox')">มีหลายตัวเลือก</a></li>
-          <li><a class="dropdown-item" (click)="changeQuestionType(i, 'radio')">ทำช่องเครื่องหมาย</a></li>
-        </ul>
+  <form [formGroup]="formDetails">
+    <div class="question-container form-header-box">
+      <div class="question-header">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>ชื่อแบบฟอร์ม</mat-label>
+          <input matInput placeholder="กรอกชื่อแบบฟอร์ม" formControlName="group_name" required />
+          <mat-error *ngIf="formDetails.get('group_name')?.invalid && formDetails.get('group_name')?.touched">
+            กรุณากรอกชื่อแบบฟอร์ม
+          </mat-error>
+        </mat-form-field>        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>คำอธิบายเพิ่มเติม</mat-label>
+          <textarea matInput placeholder="กรอกคำอธิบายเพิ่มเติม (ไม่บังคับ)" formControlName="group_description"></textarea>
+        </mat-form-field>
       </div>
     </div>
+  </form>
+</div>
 
-    <button mat-stroked-button color="warn" (click)="removeQuestion(i)">
-      ลบคำถามนี้
-    </button>
+<form [formGroup]="form" (ngSubmit)="submitForm()">
+  <div formArrayName="questions">
+    <div *ngFor="let question of questions.controls; let i = index" [formGroupName]="i" class="question-container">
+      <div class="question">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>คำถามที่ {{ i + 1 }}</mat-label>
+          <input matInput placeholder="กรอกคำถาม..." formControlName="question_text" required />
+          <mat-error *ngIf="questions.at(i).get('question_text')?.invalid && questions.at(i).get('question_text')?.touched">
+            กรุณากรอกคำถาม
+          </mat-error>
+        </mat-form-field>
+
+        <!-- ใช้ formArrayName="question_options" -->
+        <div formArrayName="question_options">
+          <div *ngFor="let option of getQuestionOptions(i).controls; let j = index" [formGroupName]="j" class="answer-container">
+            <mat-radio-group formControlName="is_correct" class="radio-group-inline">
+              <mat-radio-button [value]="1"></mat-radio-button>
+            </mat-radio-group>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>ตัวเลือกที่ {{ j + 1 }}</mat-label>
+              <input matInput placeholder="กรอกคำตอบของคุณ..." formControlName="question_options_text" />
+              <button mat-icon-button matSuffix color="warn" type="button" (click)="removeAnswer(i, j)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="pum">
+        <button mat-stroked-button color="primary" type="button" (click)="addAnswer(i)">เพิ่มคำตอบ</button>
+        <button mat-stroked-button color="warn" type="button" (click)="removeQuestion(i)">ลบคำถามนี้</button>
+      </div>
+    </div>
   </div>
 
-  <div class="add-question-container">
-    <button mat-raised-button color="primary" (click)="addQuestion()">
-      + เพิ่มคำถาม
-    </button>
+  <div class="action-container">
+    <button mat-raised-button color="primary" type="button" (click)="addQuestion()">+ เพิ่มคำถาม</button>
+    <button mat-raised-button color="accent" type="submit">ส่งฟอร์ม</button>
   </div>
 </form>
-

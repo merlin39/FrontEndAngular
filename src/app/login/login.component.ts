@@ -4,6 +4,8 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-login',
@@ -14,8 +16,8 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   <!-- ฝั่งซ้าย -->
   <div class="left-section">
     <h1>Welcome to the forms!</h1>
-    <img class="bralogond-" src="/assets/betime.png" alt="Brand Logo">
-  </div>
+    <img src="assets/betime.png?v=1" alt="Brand Logo">
+    </div>
 
   <!-- ฝั่งขวา -->
   <div class="right-section">
@@ -71,6 +73,9 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   `,
   styleUrls: ['./login.component.css']
 })
+
+
+
 export class LoginComponent implements OnInit {
   email: string = '';
   password: string = '';
@@ -113,7 +118,7 @@ export class LoginComponent implements OnInit {
     }
   
     this.http.post<any>(
-      'http://172.16.100.187:3000/loginUSER', 
+      'http://172.16.100.221:3000/loginUSER', 
       {
         email: this.email,
         password: this.password,
@@ -121,13 +126,25 @@ export class LoginComponent implements OnInit {
     ).subscribe({
       next: (response) => {
         // บันทึก token และเปลี่ยนหน้า
-        alert(response.message);
-        this.router.navigate(['/dashboard']);
+        Swal.fire({
+          title: 'Login Successful',
+          text: response.message,
+          icon: 'success',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          this.router.navigate(['/dashboard']);
+        });
       },
       error: (err) => {
         console.error('Login error:', err);
-        alert(err.error.error || 'Login failed. Please check your credentials.');
+        Swal.fire({
+          title: 'Login Failed',
+          text: err.error.error || 'Login failed. Please check your credentials.',
+          icon: 'error',
+          confirmButtonText: 'Try Again'
+        });
       }
     });
   }
+  
 }

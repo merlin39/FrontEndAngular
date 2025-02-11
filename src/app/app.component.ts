@@ -38,7 +38,7 @@ export class AppComponent {
 
   // ฟังก์ชันสำหรับเรียก API
   onLogin() {
-    this.http.get<UserResponse>('http://172.16.100.174:3000/login').subscribe({
+    this.http.get<UserResponse>('http://192.168.178.168:3000/login').subscribe({
       next: (response) => {
         if (response.success) {
           console.log('User data:', response.data);

@@ -1,4 +1,4 @@
-import { Component, OnInit,ViewChild  } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -16,78 +16,129 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { RouterModule } from '@angular/router';
-
+import Swal from 'sweetalert2';
+import { HttpClient, HttpClientModule } from '@angular/common/http'; 
+import { Router } from '@angular/router';
 
 
 @Component({
   selector: 'app-manage-forms',
-   changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterModule,
     MatToolbarModule,
     MatSidenavModule,
     MatButtonModule,
     MatIconModule,
-    CommonModule,MatButtonModule,MatIconModule,MatFormFieldModule,MatInputModule,MatTableModule,MatPaginatorModule,MatSortModule
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    HttpClientModule
   ],
   templateUrl: './manage-forms.component.html',
   styleUrl: './manage-forms.component.css'
 })
-export class ManageFormsComponent {
-  isOpened = true; // สถานะของ Sidebar
-  displayedColumns: string[] = ['id', 'name', 'email', 'status', 'actions'];
-  dataSource = new MatTableDataSource([
-    { id: 1, name: 'John Doe', age: 30, status: 'Active' },
-  { id: 2, name: 'Jane Smith', age: 25, status: 'Inactive' },
-  { id: 3, name: 'Emily Davis', age: 35, status: 'Pending' },
-  { id: 4, name: 'Michael Johnson', age: 40, status: 'Active' },
-  { id: 5, name: 'Sarah Wilson', age: 45, status: 'Inactive' },
-  { id: 6, name: 'Chris Brown', age: 28, status: 'Active' },
-  { id: 7, name: 'Anna Taylor', age: 32, status: 'Pending' },
-  { id: 8, name: 'James Williams', age: 39, status: 'Inactive' },
-  { id: 9, name: 'Robert Miller', age: 50, status: 'Active' },
-  { id: 10, name: 'Laura Wilson', age: 27, status: 'Pending' },
-    // เพิ่มข้อมูลเพิ่มเติมตามต้องการ
-  ]); 
+export class ManageFormsComponent implements OnInit, AfterViewInit {
+  isOpened = true;
+  displayedColumns: string[] = ['index', 'group_name', 'group_description', 'actions'];
+  dataSource = new MatTableDataSource<any>([]);
   activeMenu: string | null = null;
-  isSmallScreen = false; 
-
-  constructor(private breakpointObserver: BreakpointObserver) {}
-
+  isSmallScreen = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('sidenav') sidenav!: MatSidenav;
   
 
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private http: HttpClient,
+    private cdRef: ChangeDetectorRef,
+    private router: Router
+  ) {}
+
   ngOnInit(): void {
     this.breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
       this.isSmallScreen = result.matches;
-      
     });
   }
+  viewDetails(row: any): void {
+    console.log('📢 คลิกที่แถว:', row);
+    this.router.navigate(['/formdetail', row.group_id]); 
+  }
+  
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.fetchData(); // โหลดข้อมูลจาก API
+  }
+
+  fetchData(): void {
+    this.http.get<any>('http://192.168.178.168:3000/manage_form').subscribe(
+      (response) => {
+        console.log('📢 API Response:', response); 
+        
+        if (!response || !response.formData || response.formData.length === 0) {
+          console.warn('⚠️ API Response ไม่มีข้อมูล หรืออยู่ในรูปแบบที่ผิด');
+          this.dataSource.data = [];
+        } else {
+          console.log('✅ ข้อมูลที่ได้รับจาก API:', response.formData);
+          this.dataSource.data = response.formData;
+        }
+  
+        setTimeout(() => {
+          if (this.paginator && this.sort) {
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+          }
+          this.cdRef.detectChanges(); // อัปเดต UI
+        });
+      },
+      (error) => {
+        console.error('❌ Error fetching data:', error);
+        Swal.fire('Error', 'Failed to load data from the server', 'error');
+      }
+    );
+  }
+
   toggleSidebar() {
     this.sidenav.toggle();
   }
 
-  // manage
   toggleSubmenu(menu: string): void {
     this.activeMenu = this.activeMenu === menu ? null : menu;
-    
   }
-  
+
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   edit(element: any): void {
-    console.log('Edit:', element);
+    console.log('🔍 Editing:', element);
+    this.router.navigate(['/formdetail', element.group_id]); // ✅ นำทางไปยัง formdetail/:id
   }
-
+  
   delete(element: any): void {
     console.log('Delete:', element);
   }
 
+  logout() {
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('token');
 
+    Swal.fire({
+      title: 'Logout',
+      text: 'You have been logged out successfully.',
+      icon: 'success',
+      confirmButtonText: 'OK'
+    }).then(() => {
+      window.location.href = '/login-admin';
+    });
+  }
 }

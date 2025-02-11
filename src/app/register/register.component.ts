@@ -120,7 +120,7 @@ export class RegisterComponent {
     console.log('Payload:', payload);
   
     // Send POST request to the server
-    this.http.post('http://172.16.100.174:3000/register', payload).subscribe({
+    this.http.post('http://172.16.100.196:3000/register', payload).subscribe({
       next: (response) => {
         console.log('Response:', response);
         alert('Registration successful!');

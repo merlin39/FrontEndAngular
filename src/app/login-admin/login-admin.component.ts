@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router,RouterModule } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2';  
+
 @Component({
   selector: 'app-login-admin',
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule,RouterModule],
 
   template: `
   <div class="Login-page">
@@ -114,7 +114,7 @@ export class LoginAdminComponent {
     }
   
     this.http.post<any>(
-      'http://192.168.178.168:3000/login', 
+      'http://172.16.100.185:3000/login', 
       {
         email: this.email,
         password: this.password,

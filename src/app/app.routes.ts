@@ -7,18 +7,21 @@ import { ManageUserComponent } from './manage-user/manage-user.component';
 import { ManageFormsComponent } from './manage-forms/manage-forms.component';
 import { FormsComponent } from './forms/forms.component';
 import { FormdetailComponent } from './formdetail/formdetail.component';
+import { UserdetailComponent } from './userdetail/userdetail.component';
+
 
 
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'app/login-admin', pathMatch: 'full' },
-  {path: 'app/login-admin', component: LoginAdminComponent},
-  { path: 'app/login', component: LoginComponent },
-  { path: 'app/register', component: RegisterComponent },
-  { path: 'app/dashboard', component: DashboardComponent },
-  { path: 'app/manage-user', component: ManageUserComponent},
-  {path: 'app/manage-forms', component: ManageFormsComponent},
-  {path: 'app/forms', component: FormsComponent},
- { path:'app/formdetail/:id',component:FormdetailComponent }
+  { path: '', redirectTo: 'login-admin', pathMatch: 'full' },
+  {path: 'login-admin', component: LoginAdminComponent},
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'manage-user', component: ManageUserComponent},
+  {path: 'manage-forms', component: ManageFormsComponent},
+  {path: 'forms', component: FormsComponent},
+  {path:'formdetail/:id',component:FormdetailComponent },
+  {path: 'userdetail/:id',component:UserdetailComponent}
   
 ];

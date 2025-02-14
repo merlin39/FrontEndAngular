@@ -68,7 +68,7 @@ export class DashboardComponent implements OnInit {
   }
 
   fetchDashboardData() {
-    this.http.get<any>('http://192.168.178.168:3000/count_dash')
+    this.http.get<any>('http://172.16.100.185:3000/count_dash')
       .subscribe(
         (data) => {
           console.log('✅ API Response:', data); // ✅ Debug API Response

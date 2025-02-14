@@ -15,10 +15,10 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ChangeDetectionStrategy } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import {Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { HttpClient, HttpClientModule } from '@angular/common/http'; 
-import { Router } from '@angular/router';
+
 
 
 @Component({
@@ -75,11 +75,11 @@ export class ManageFormsComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.fetchData(); // โหลดข้อมูลจาก API
+    this.fetchData(); 
   }
 
   fetchData(): void {
-    this.http.get<any>('http://192.168.178.168:3000/manage_form').subscribe(
+    this.http.get<any>('http://172.16.100.185:3000/manage_form').subscribe(
       (response) => {
         console.log('📢 API Response:', response); 
         
@@ -96,7 +96,7 @@ export class ManageFormsComponent implements OnInit, AfterViewInit {
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
           }
-          this.cdRef.detectChanges(); // อัปเดต UI
+          this.cdRef.detectChanges(); 
         });
       },
       (error) => {
@@ -121,13 +121,50 @@ export class ManageFormsComponent implements OnInit, AfterViewInit {
 
   edit(element: any): void {
     console.log('🔍 Editing:', element);
-    this.router.navigate(['/formdetail', element.group_id]); // ✅ นำทางไปยัง formdetail/:id
-  }
-  
-  delete(element: any): void {
-    console.log('Delete:', element);
+    this.router.navigate(['/formdetail', element.group_id]); 
   }
 
+  delete(element: any): void {
+    Swal.fire({
+      title: `ยืนยันการลบข้อมูลหรือไม่?`,
+      text: 'ข้อมูลนี้จะถูกลบถาวรและไม่สามารถกู้คืนได้',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'ลบข้อมูล',
+      cancelButtonText: 'ยกเลิก'
+    }).then((result) => {
+      if (result.isConfirmed) {
+  
+        const updateUrl = `http://172.16.100.185:3000/delete_form/${element.group_id}`;
+  
+        console.log('กำลังเปลี่ยนสถานะ ID:', element.group_id);
+        console.log('Update URL:', updateUrl);
+  
+        this.http.put(updateUrl, { status: 0 }).subscribe({
+          next: (res) => {
+          
+            this.dataSource.data = this.dataSource.data.filter(
+              item => item.group_id !== element.group_id
+            );
+  
+            Swal.fire(
+              'ลบสำเร็จ!',
+              'ข้อมูลนี้ถูกลบไปแล้ว',
+              'success'
+            );
+          },
+          error: (error) => {
+            console.error('Error changing status:', error);
+            Swal.fire('เกิดข้อผิดพลาด!', 'ไม่สามารถลบได้', 'error');
+          }
+        });
+      }
+    });
+  }
+  
+  
   logout() {
     localStorage.removeItem('user_id');
     localStorage.removeItem('token');

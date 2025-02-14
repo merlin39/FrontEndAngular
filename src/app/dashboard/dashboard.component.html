@@ -4,21 +4,23 @@
          <div class="sidebar-header">
            <img
              class="logo-form"
-             src="assets/betime2.png"
+             src="/src/assets/betime2.png"
              alt="logo"
              aria-hidden="true" />
            <h3 class="F">Forms</h3>
          </div>
          <ul class="menu-list">
-          <li><a href="dashboard">Dashboard</a></li>
+          <a routerLink="/dashboard">dashboard</a>
+
           <li>
             <a (click)="toggleSubmenu('components')" class="menu-item">
               <span>Management</span>
               <i [class.rotate]="activeMenu === 'components'" class="arrow-icon">▼</i>
             </a>
             <ul class="submenu" [class.show]="activeMenu === 'components'">
-              <li><a href="manage-user">User</a></li>
-              <li><a href="manage-forms">Forms</a></li>
+              <a routerLink="/manage-user">User</a>
+              <a routerLink="/manage-forms">Forms</a>
+
             </ul>
           </li>
           

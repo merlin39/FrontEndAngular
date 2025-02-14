@@ -36,7 +36,7 @@ export class FormsComponent {
   formDetails: FormGroup;
   form: FormGroup;
 
-  apiUrl = 'http://192.168.178.168:3000/forms-with-questions-and-question_options';
+  apiUrl = 'http://172.16.100.185:3000/forms-with-questions-and-question_options';
 
   constructor(
     private fb: FormBuilder,

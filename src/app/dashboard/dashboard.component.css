@@ -1,30 +1,28 @@
-/* Header Section */
-.dash-front {
-   display: flex;
-   align-items: center;
-   justify-content: flex-start; 
-   padding: 0 20px; 
-   margin-left: 20px; 
-   background: linear-gradient(to right, #d4e1f2, #1f4b72, #072641); 
-   height: 60px; 
- }
- 
+.content-container {
+  background-color: 	#F3F3FD ;
+}
+
+.F {
+  color: #283467;
+  
+}
+.profile-icon {
+  color: #283467;
+  margin-top: 20px; 
+  top: 5;
+}
  .logo-form {
    display: block; 
    margin: -20px auto 0 auto;   
    max-width: 150px; 
    height: auto;
  }
- 
-  .dash-front span {
-    font-size: 35px;
-    font-weight: bold;
-    color: white;
-    text-shadow: 1px 1px 2px #333;
-    margin-left: 10px;
-  }
+ .wel{
+  margin-top: 20px;
   
-  /* Navigation Menu */
+ }
+
+  
   .nav-menu {
     display: flex;
     margin-left: auto;
@@ -60,7 +58,6 @@
     border-radius: 5px;
   }
   
-  /* Hamburger Menu */
   .menu-toggle {
     display: none;
     
@@ -72,7 +69,6 @@
     cursor: pointer;
   }
   
-  /* Responsive Design */
   @media (max-width: 768px) {
     .nav-menu {
       display: none;
@@ -121,28 +117,22 @@
   }
   
   .sidenav-container {
-   display: flex;
-   height: 100vh;
- }
- 
+    height: 100vh;
+  }
  .sidenav {
-   width: 250px;
-   background: linear-gradient(to bottom, #dce5f0, #457fb3, #245783, #072641);
-   text-align: center;
-   font-size: 24px;
-   color: #041043c1;
- }
- 
+  width: 250px;
+  background: linear-gradient(to bottom, #dce5f0, #457fb3, #245783, #072641);
+  text-align: center;
+  font-size: 24px;
+  color: #041043c1;
+  
+}
  .sidebar-header {
    text-align: center;
    padding: 20px 10px;
  }
  
- .sidebar-title {
-   font-size: 20px;
-   font-weight: bold;
- }
- 
+
  .menu-list {
    display: flex;
    list-style: none;
@@ -176,10 +166,9 @@
    border-radius: 15px; 
    box-sizing: border-box;
    color: white; 
-   font-weight: normal; /* ✅ เปลี่ยนจาก bold เป็น normal */
+   font-weight: normal; 
  }
  
- /* เมนูย่อย */
  .submenu {
    list-style: none;
    margin: 0 auto; 
@@ -224,9 +213,14 @@
  }
  
  .title {
-   font-size: 24px;
-   color: white;
- }
+  font-size: 20px; 
+  text-align: center;
+  flex-grow: 1;
+  font-size: 24px; 
+  font-weight: bold;
+  color: #041043c1; 
+  padding-left: 30px;
+}
  
  .profile-menu {
    position: relative;
@@ -295,8 +289,6 @@
  }
  
  
- 
- 
  .dashboard-cards {
    display: flex;
    gap: 20px;
@@ -308,11 +300,7 @@
    text-align: center;
  }
  
- .admin-buttons {
-   margin-top: 20px;
-   display: flex;
-   gap: 15px;
- }
+
  
  .notifications-menu {
    position: absolute;
@@ -335,11 +323,7 @@
    text-align: center;
  }
  
- .admin-buttons {
-   margin-top: 20px;
-   display: flex;
-   gap: 15px;
- }
+
  
  .notifications-menu {
    position: absolute;
@@ -369,34 +353,16 @@
    text-align: center;
  }
  
- .admin-buttons {
-   margin-top: 20px;
-   display: flex;
-   gap: 15px;
- }
- 
- /* Light Mode (Default) */
- body {
-   background-color: #f5f5f5;
-   color: #333;
-   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
- }
- 
- .mat-sidenav-content {
-   display: flex;
-   flex-direction: column;
-   flex-grow: 1;
-   transition: margin-left 0.3s ease-in-out; /* ✅ ทำให้ sidebar ขยับนุ่มนวล */
- }
- 
- /* ✅ ปรับระยะห่างระหว่าง Dashboard Cards และ Quiz Performance */
+
+
+
  .quiz-performance-card {
    width: 100%;
    max-width: 960px;
    display: flex;
    flex-direction: column;
    align-items: center;
-   margin-top: 50px; /* ✅ เพิ่มระยะห่างจากกล่องด้านบน */
+   margin-top: 50px; 
  }
  
  

@@ -12,6 +12,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { Router, NavigationEnd } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -31,19 +32,26 @@ import Swal from 'sweetalert2';
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
-  isMenuOpen: boolean = window.innerWidth > 768;
+  isSmallScreen = false;
+  isMenuOpen: boolean = true;
   isProfileMenuOpen: boolean = false;
   activeMenu: string | null = null;
   isLoading: boolean = true;
   lastUpdated: string = '';
-
+  isOpened = true;
+  
   adminName: string = 'Admin Name';
   count_user: number = 0;
   count_form: number = 0;
 
   @ViewChild('sidenav') sidenav!: MatSidenav;
 
-  constructor(private http: HttpClient, private router: Router, private cdr: ChangeDetectorRef) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private breakpointObserver: BreakpointObserver
+  ) { 
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd && event.url === '/admindashboard') {
         this.reloadUI();
@@ -56,39 +64,79 @@ export class DashboardComponent implements OnInit {
     this.isMenuOpen = event.target.innerWidth > 768;
   }
 
-  ngOnInit() {
-    this.reloadUI();
+  reloadUI() {
+    this.fetchDashboardData();
   }
 
-  reloadUI() {
-    this.isLoading = true;
-    setTimeout(() => {
-      this.fetchDashboardData();
-    }, 100);
+  ngOnInit(): void {
+    this.adminName = localStorage.getItem('admin_name') ?? 'Admin Dashboard';
+    
+    this.breakpointObserver.observe([Breakpoints.Handset]).subscribe((result: { matches: boolean }) => {
+      this.isSmallScreen = result.matches;
+      this.isMenuOpen = !this.isSmallScreen;
+      this.cdr.detectChanges(); // บังคับให้ Angular ตรวจสอบ UI ใหม่
+    });
+  
+    this.fetchAdminName();
+    this.fetchDashboardData();
   }
+  
+  fetchAdminName() {
+    const userId = localStorage.getItem('user_id'); // ดึง user_id จาก localStorage
+    if (!userId) {
+      console.warn('⚠️ ไม่มี user_id ใน localStorage');
+      this.adminName = 'Admin Dashboard';
+      return;
+    }
+  
+    this.http.get<any>('http://192.168.10.53:3000/showuser').subscribe(
+      (data) => {
+        if (data && data.users) {
+          // ค้นหาผู้ใช้ที่มี status = 2 และ user_id ตรงกับที่ล็อกอิน
+          const adminUser = data.users.find((user: any) => user.status === 2 && user.user_id == userId);
+          
+          if (adminUser) {
+            this.adminName = adminUser.f_name + ' ' + adminUser.l_name; // รวมชื่อ + นามสกุล
+          } else {
+            console.warn('⚠️ ไม่พบผู้ใช้ที่มีสิทธิ์แอดมิน');
+            this.adminName = 'Admin Dashboard';
+          }
+        } else {
+          console.error('❌ Error: API Response ไม่ถูกต้อง', data);
+          this.adminName = 'Admin Dashboard';
+        }
+      },
+      (error) => {
+        console.error('❌ Error fetching admin name:', error);
+        this.adminName = 'Admin Dashboard';
+      }
+    );
+  }
+  
+  
 
   fetchDashboardData() {
-    this.http.get<any>('http://172.16.100.185:3000/count_dash')
+    this.isLoading = true;
+
+    this.http.get<any>('http://192.168.10.53:3000/count_dash')
       .subscribe(
         (data) => {
-          console.log('✅ API Response:', data); // ✅ Debug API Response
-  
+          console.log('✅ API Response:', data);
+
           if (data && data.summary) {
             this.count_user = data.summary.count_user ?? 0;
             this.count_form = data.summary.count_form ?? 0;
-            console.log('✅ Updated count_user:', this.count_user);
-            console.log('✅ Updated count_form:', this.count_form);
           } else {
             console.warn('⚠️ API Response is invalid or missing summary:', data);
+            this.count_user = 0;
+            this.count_form = 0;
           }
-  
+
           this.lastUpdated = new Date().toLocaleString();
           this.isLoading = false;
         },
         (error) => {
           console.error('❌ Error fetching dashboard data:', error);
-          console.error('❌ Full Error:', error.error);
-  
           this.isLoading = false;
           Swal.fire({
             title: 'Error!',
@@ -99,14 +147,14 @@ export class DashboardComponent implements OnInit {
         }
       );
   }
-  
-  
+
   refreshDashboard() {
     console.log('Refreshing Dashboard...');
     this.fetchDashboardData();
   }
 
   toggleSidebar() {
+    this.isMenuOpen = !this.isMenuOpen;
     this.sidenav.toggle();
   }
 
@@ -134,16 +182,17 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
-
   logout() {
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('token');
+
     Swal.fire({
-      title: 'ออกจากระบบสำเร็จ!',
-      text: 'คุณถูกออกจากระบบแล้ว',
+      title: 'Logout',
+      text: 'You have been logged out successfully.',
       icon: 'success',
-      timer: 2000,
-      showConfirmButton: false
+      confirmButtonText: 'OK'
     }).then(() => {
-      window.location.href = '/adminlogin';
+      window.location.href = '/login-admin';
     });
   }
 }

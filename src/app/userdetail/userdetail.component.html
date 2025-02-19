@@ -8,22 +8,25 @@
 <div class="content-area">
   <form [formGroup]="userForm" (ngSubmit)="submitUser()">
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>ชื่อ</mat-label>
-      <input matInput placeholder="กรอกชื่อ" formControlName="f_name" required />
+      <mat-label>ชื่อ - นามสกุล</mat-label>
+      <input
+        matInput
+        placeholder="กรอกชื่อและนามสกุล"
+        formControlName="full_name"
+        required
+      />
     </mat-form-field>
-
+    <label for="email">อีเมล</label>
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>นามสกุล</mat-label>
-      <input matInput placeholder="กรอกนามสกุล" formControlName="l_name" required />
+      <input
+        matInput
+        placeholder="กรอกอีเมล"
+        formControlName="email"
+        required
+      />
     </mat-form-field>
-
+    <label for="status">สถานะ</label>
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>อีเมล</mat-label>
-      <input matInput placeholder="กรอกอีเมล" formControlName="email" required />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>สถานะ</mat-label>
       <mat-select formControlName="status">
         <mat-option [value]="1">Active</mat-option>
         <mat-option [value]="0">Inactive</mat-option>

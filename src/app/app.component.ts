@@ -36,13 +36,12 @@ export class AppComponent {
   }
   constructor(private http: HttpClient) {}
 
-  // ฟังก์ชันสำหรับเรียก API
   onLogin() {
-    this.http.get<UserResponse>('http://192.168.178.168:3000/login').subscribe({
+    this.http.get<UserResponse>('http://192.168.10.53:3000/login').subscribe({
       next: (response) => {
         if (response.success) {
           console.log('User data:', response.data);
-          // คุณสามารถเก็บข้อมูลในตัวแปรเพื่อใช้งานต่อ
+        
           const userData = response.data;
           // เพิ่มโค้ดสำหรับการจัดการ userData ได้ที่นี่
         } else {

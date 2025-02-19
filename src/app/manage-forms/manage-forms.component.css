@@ -1,8 +1,14 @@
-/* page */
+.F {
+  color: #283467;
+}
+.profile-icon {
+  color: #283467;
+  margin-top: 20px; 
+  top: 5;
+}
 .sidenav-container {
    height: 100vh;
  }
- /* จัดอยู่ตรงกลาง */
 .toolbar {
   display: flex;
   align-items: center; 
@@ -17,7 +23,7 @@
   margin-top: 10px;
   margin-bottom: 10px;  
 }
-/* manage */
+
 .title {
   font-size: 20px; 
   text-align: center;
@@ -26,7 +32,7 @@
   font-weight: bold; 
   color: #041043c1; 
 }
- /* Forms */
+ 
  .sidenav {
    width: 250px;
    background: linear-gradient(to bottom, #dce5f0, #457fb3, #245783, #072641);

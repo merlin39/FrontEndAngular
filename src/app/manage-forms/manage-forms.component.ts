@@ -49,6 +49,7 @@ export class ManageFormsComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<any>([]);
   activeMenu: string | null = null;
   isSmallScreen = false;
+  adminName: string = 'Admin Name';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -63,9 +64,11 @@ export class ManageFormsComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
+    this.adminName = localStorage.getItem('admin_name') ?? 'Admin Dashboard';
     this.breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
       this.isSmallScreen = result.matches;
     });
+    this.fetchAdminName();
   }
   viewDetails(row: any): void {
     console.log('📢 คลิกที่แถว:', row);
@@ -77,9 +80,40 @@ export class ManageFormsComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
     this.fetchData(); 
   }
+  fetchAdminName() {
+    const userId = localStorage.getItem('user_id'); // ดึง user_id จาก localStorage
+    if (!userId) {
+      console.warn('⚠️ ไม่มี user_id ใน localStorage');
+      this.adminName = 'Admin Dashboard';
+      return;
+    }
+  
+    this.http.get<any>('http://192.168.10.53:3000/showuser').subscribe(
+      (data) => {
+        if (data && data.users) {
+          // ค้นหาผู้ใช้ที่มี status = 2 และ user_id ตรงกับที่ล็อกอิน
+          const adminUser = data.users.find((user: any) => user.status === 2 && user.user_id == userId);
+          
+          if (adminUser) {
+            this.adminName = adminUser.f_name + ' ' + adminUser.l_name; // รวมชื่อ + นามสกุล
+          } else {
+            console.warn('⚠️ ไม่พบผู้ใช้ที่มีสิทธิ์แอดมิน');
+            this.adminName = 'Admin Dashboard';
+          }
+        } else {
+          console.error('❌ Error: API Response ไม่ถูกต้อง', data);
+          this.adminName = 'Admin Dashboard';
+        }
+      },
+      (error) => {
+        console.error('❌ Error fetching admin name:', error);
+        this.adminName = 'Admin Dashboard';
+      }
+    );
+  }
 
   fetchData(): void {
-    this.http.get<any>('http://172.16.100.185:3000/manage_form').subscribe(
+    this.http.get<any>('http://192.168.10.53:3000/manage_form').subscribe(
       (response) => {
         console.log('📢 API Response:', response); 
         
@@ -137,7 +171,7 @@ export class ManageFormsComponent implements OnInit, AfterViewInit {
     }).then((result) => {
       if (result.isConfirmed) {
   
-        const updateUrl = `http://172.16.100.185:3000/delete_form/${element.group_id}`;
+        const updateUrl = `http://192.168.10.53:3000/delete_form/${element.group_id}`;
   
         console.log('กำลังเปลี่ยนสถานะ ID:', element.group_id);
         console.log('Update URL:', updateUrl);

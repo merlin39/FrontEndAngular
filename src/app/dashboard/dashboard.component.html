@@ -1,66 +1,58 @@
 <mat-sidenav-container class="sidenav-container">
-   <mat-sidenav #sidenav [mode]="isMenuOpen ? 'side' : 'over'" [opened]="isMenuOpen" class="sidenav">
-      <nav>
-         <div class="sidebar-header">
-           <img
-             class="logo-form"
-             src="/src/assets/betime2.png"
-             alt="logo"
-             aria-hidden="true" />
-           <h3 class="F">Forms</h3>
-         </div>
-         <ul class="menu-list">
-          <a routerLink="/dashboard">dashboard</a>
+  <mat-sidenav #sidenav *ngIf="!isLoading" [mode]="'side'" [opened]="!isSmallScreen" class="sidenav">
 
-          <li>
-            <a (click)="toggleSubmenu('components')" class="menu-item">
-              <span>Management</span>
-              <i [class.rotate]="activeMenu === 'components'" class="arrow-icon">▼</i>
-            </a>
-            <ul class="submenu" [class.show]="activeMenu === 'components'">
-              <a routerLink="/manage-user">User</a>
-              <a routerLink="/manage-forms">Forms</a>
+    <nav>
+      <div class="sidebar-header">
+        <img
+          class="logo-form"
+          src="/assets/betime2.png"
+          alt="logo"
+          aria-hidden="true" />
+          <h4 class="F">
+            <mat-icon class="profile-icon">account_circle</mat-icon> {{ adminName }}
+          </h4>
+          
 
-            </ul>
-          </li>
-          
-          
-          <li><a href="reports">Reports</a></li>
-          <li><a href="settings">Settings</a></li>
-          <li>
-            <a href="javascript:void(0);" (click)="logout()" class="logout-button">Logout</a>
-          </li>        
-          
-        </ul>
-       </nav>
-   </mat-sidenav>
+      </div>
+      <ul class="menu-list">
+       <li><a href="dashboard">Dashboard</a></li>
+       <li>
+         <a (click)="toggleSubmenu('components')" class="menu-item">
+           <span>Management</span>
+           <i [class.rotate]="activeMenu === 'components'" class="arrow-icon">▼</i>
+         </a>
+         <ul class="submenu" [class.show]="activeMenu === 'components'">
+           <li><a href="manage-user">User</a></li>
+           <li><a href="manage-forms">Forms</a></li>
+         </ul>
+       </li>
+       
+       
+       <li><a href="reports">Reports</a></li>
+       <li><a href="settings">Settings</a></li>
+       <li>
+         <a href="javascript:void(0);" (click)="logout()" class="logout-button">Logout</a>
+       </li>        
+       
+     </ul>
+    </nav>
+  </mat-sidenav>
+
  
    <mat-sidenav-content class="content-container">
-     <mat-toolbar color="primary" class="toolbar">
-       <button mat-icon-button (click)="toggleSidebar()" *ngIf="!isMenuOpen">
-         <mat-icon>menu</mat-icon>
-       </button>
-       <span class="title">Admin Dashboard</span>
- 
-       <!-- ✅ Profile Menu -->
-       <div class="profile-menu">
-         <button mat-button (click)="toggleProfileMenu()">
-           <mat-icon>account_circle</mat-icon>
-           <span>{{ adminName }}</span>
-           <mat-icon>arrow_drop_down</mat-icon>
-         </button>
-         <div class="dropdown-menu" *ngIf="isProfileMenuOpen">
-           <ul>
-             <li><a routerLink="/profile">Profile</a></li>
-             <li><a routerLink="/settings">Settings</a></li>
-             <li><a (click)="confirmLogout()">Logout</a></li>
-           </ul>
-         </div>
-       </div>
-     </mat-toolbar>
- 
+    <mat-toolbar color="primary" class="toolbar">
+      <div class="toolbar-container">
+        <button 
+          mat-icon-button 
+          (click)="toggleSidebar()" 
+          *ngIf="isSmallScreen">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span class="title">Dashboard</span>
+      </div>
+    </mat-toolbar>
      <div class="content">
-       <h1>Welcome to Admin Dashboard</h1>
+       <h3 class="wel">Welcome to Admin Dashboard</h3>
  
        <div *ngIf="isLoading">Loading...</div>
        <p *ngIf="!isLoading">Last Updated: {{ lastUpdated }}</p>

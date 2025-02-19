@@ -35,7 +35,6 @@
           </mat-error>
         </mat-form-field>
 
-        <!-- ใช้ formArrayName="question_options" -->
         <div formArrayName="question_options">
           <div *ngFor="let option of getQuestionOptions(i).controls; let j = index" [formGroupName]="j" class="answer-container">
             <mat-radio-group formControlName="is_correct" class="radio-group-inline">

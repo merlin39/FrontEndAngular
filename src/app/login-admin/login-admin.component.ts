@@ -14,7 +14,7 @@ import Swal from 'sweetalert2';
     <!-- ฝั่งซ้าย -->
     <div class="left-section">
       <h1>Welcome to the forms!</h1>
-      <img [src]="'assets/betime.png'" alt="Brand Logo">
+      <img [src]="'/assets/betime.png'" alt="Brand Logo">
       </div>
 
     <!-- ฝั่งขวา -->
@@ -53,7 +53,7 @@ import Swal from 'sweetalert2';
                 (click)="togglePasswordVisibility()" 
                 class="toggle-password" 
                 aria-label="Toggle password visibility">
-                <i [class]="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
+                <i [ngClass]="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
               </button>
             </div>
             <div *ngIf="passwordError" class="error-message">{{ passwordError }}</div>
@@ -104,7 +104,6 @@ export class LoginAdminComponent {
     }
   
     if (this.emailError || this.passwordError) {
-      // ใช้ SweetAlert2 แจ้งเตือนกรณีกรอกข้อมูลไม่ถูกต้อง
       Swal.fire({
         icon: 'error',
         title: 'Invalid Input',
@@ -114,7 +113,7 @@ export class LoginAdminComponent {
     }
   
     this.http.post<any>(
-      'http://172.16.100.185:3000/login', 
+      'http://192.168.10.53:3000/login', 
       {
         email: this.email,
         password: this.password,

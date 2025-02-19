@@ -149,5 +149,6 @@
  /* pass ///*/
  .toggle-password i {
    pointer-events: none;
+     display: inline-block;
  }
  

@@ -16,7 +16,7 @@ import Swal from 'sweetalert2';
   <!-- ฝั่งซ้าย -->
   <div class="left-section">
     <h1>Welcome to the forms!</h1>
-    <img src="assets/betime.png?v=1" alt="Brand Logo">
+    <img src="/assets/betime.png?v=1" alt="Brand Logo">
     </div>
 
   <!-- ฝั่งขวา -->
@@ -118,7 +118,7 @@ export class LoginComponent implements OnInit {
     }
   
     this.http.post<any>(
-      'http://172.16.100.181:3000/loginUSER', 
+      'http://192.168.10.53:3000/loginUSER', 
       {
         email: this.email,
         password: this.password,

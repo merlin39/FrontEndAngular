@@ -36,7 +36,7 @@ export class FormsComponent {
   formDetails: FormGroup;
   form: FormGroup;
 
-  apiUrl = 'http://172.16.100.185:3000/forms-with-questions-and-question_options';
+  apiUrl = 'http://192.168.10.53:3000/forms-with-questions-and-question_options';
 
   constructor(
     private fb: FormBuilder,
@@ -157,12 +157,11 @@ export class FormsComponent {
         console.log('✅ ส่งฟอร์มสำเร็จ:', data);
         this.showModal('ส่งข้อมูลสำเร็จ', 'success');
   
-        // ✅ นำทางไปหน้า `manage-forms` และรีเฟรช
         setTimeout(() => {
           this.router.navigate(['/manage-forms']).then(() => {
-            window.location.reload(); // รีเฟรชหน้าเพื่อโหลดข้อมูลใหม่
+            window.location.reload(); 
           });
-        }, 1500); // หน่วงเวลาให้ผู้ใช้เห็น SweetAlert ก่อนรีเฟรช
+        }, 1500); 
       })
       .catch(error => {
         console.error('❌ เกิดข้อผิดพลาด:', error);

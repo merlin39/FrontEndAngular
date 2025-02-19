@@ -62,6 +62,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<UserTableData>([]);
   activeMenu: string | null = null;
   isSmallScreen = false;
+  adminName: string = 'Admin Name';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -76,6 +77,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.adminName = localStorage.getItem('admin_name') ?? 'Admin Dashboard';
     this.breakpointObserver.observe([Breakpoints.Handset])
       .pipe(takeUntil(this.destroy$))
       .subscribe(result => {
@@ -83,6 +85,38 @@ export class ManageUserComponent implements OnInit, OnDestroy {
       });
 
     this.loadUserData();
+    this.fetchAdminName();
+  }
+  fetchAdminName() {
+    const userId = localStorage.getItem('user_id'); // ดึง user_id จาก localStorage
+    if (!userId) {
+      console.warn('⚠️ ไม่มี user_id ใน localStorage');
+      this.adminName = 'Admin Dashboard';
+      return;
+    }
+  
+    this.http.get<any>('http://192.168.10.53:3000/showuser').subscribe(
+      (data) => {
+        if (data && data.users) {
+          // ค้นหาผู้ใช้ที่มี status = 2 และ user_id ตรงกับที่ล็อกอิน
+          const adminUser = data.users.find((user: any) => user.status === 2 && user.user_id == userId);
+          
+          if (adminUser) {
+            this.adminName = adminUser.f_name + ' ' + adminUser.l_name; // รวมชื่อ + นามสกุล
+          } else {
+            console.warn('⚠️ ไม่พบผู้ใช้ที่มีสิทธิ์แอดมิน');
+            this.adminName = 'Admin Dashboard';
+          }
+        } else {
+          console.error('❌ Error: API Response ไม่ถูกต้อง', data);
+          this.adminName = 'Admin Dashboard';
+        }
+      },
+      (error) => {
+        console.error('❌ Error fetching admin name:', error);
+        this.adminName = 'Admin Dashboard';
+      }
+    );
   }
 
   ngOnDestroy(): void {
@@ -91,7 +125,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   }
 
   loadUserData(): void {
-    this.http.get<{ message: string; users: User[] }>('http://172.16.100.185:3000/showuser').subscribe({
+    this.http.get<{ message: string; users: User[] }>('http://192.168.10.53:3000/showuser').subscribe({
       next: (response) => {
         const formattedData = response.users.map(user => ({
           id: user.user_id,
@@ -150,10 +184,9 @@ export class ManageUserComponent implements OnInit, OnDestroy {
       cancelButtonText: 'ยกเลิก'
     }).then((result) => {
       if (result.isConfirmed) {
-        const updateUrl = `http://172.16.100.185:3000/delete_user/${element.id}`;
+        const updateUrl = `http://192.168.10.53:3000/delete_user/${element.id}`;
         this.http.put(updateUrl, { status: 0 }).subscribe({
           next: (res) => {
-            // กรองข้อมูลใน dataSource เพื่อเอาข้อมูลที่ถูกลบออกไป
             this.dataSource.data = this.dataSource.data.filter(
               (item: any) => item.id !== element.id
             );
@@ -171,4 +204,17 @@ export class ManageUserComponent implements OnInit, OnDestroy {
       }
     });
   }
+    logout() {
+      localStorage.removeItem('user_id');
+      localStorage.removeItem('token');
+  
+      Swal.fire({
+        title: 'Logout',
+        text: 'You have been logged out successfully.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      }).then(() => {
+        window.location.href = '/login-admin';
+      });
+    }
 }

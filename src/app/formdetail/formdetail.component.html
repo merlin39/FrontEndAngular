@@ -28,7 +28,6 @@
   </form>
 </div>
 
-<!-- ส่วนฟอร์มคำถาม/ตัวเลือก -->
 <form [formGroup]="form" (ngSubmit)="submitForm()">
   <div formArrayName="questions">
     <div
@@ -37,7 +36,7 @@
       class="question-container"
     >
       <div class="question">
-        <!-- ช่องกรอกคำถาม -->
+        
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>คำถามที่ {{ i + 1 }}</mat-label>
           <input
@@ -51,14 +50,12 @@
           </mat-error>
         </mat-form-field>
 
-        <!-- ส่วนตัวเลือก (answers) -->
         <div formArrayName="question_options">
           <div
             *ngFor="let option of getQuestionOptions(i).controls; let j = index"
             [formGroupName]="j"
             class="answer-container"
           >
-            <!-- กำหนด is_correct เป็น radio หรือ checkbox ก็ได้ -->
             <mat-radio-group formControlName="is_correct" class="radio-group-inline">
               <mat-radio-button [value]="true"></mat-radio-button>
             </mat-radio-group>
@@ -84,7 +81,6 @@
         </div>
       </div>
 
-      <!-- ปุ่มเพิ่มคำตอบ / ลบคำถาม -->
       <div class="pum">
         <button mat-stroked-button color="primary" type="button" (click)="addAnswer(i)">
           เพิ่มคำตอบ
@@ -102,7 +98,6 @@
     </div>
   </div>
 
-  <!-- ปุ่มเพิ่มคำถาม / ส่งฟอร์ม -->
   <div class="action-container">
     <button mat-raised-button color="primary" type="button" (click)="addQuestion()">
       + เพิ่มคำถาม

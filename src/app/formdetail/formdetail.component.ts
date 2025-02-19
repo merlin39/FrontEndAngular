@@ -35,7 +35,7 @@ export class FormdetailComponent implements OnInit {
   form!: FormGroup;
   groupId!: string;
 
-  apiUrl = 'http://172.16.100.185:3000';
+  apiUrl = 'http://192.168.10.53:3000';
 
   constructor(
     private fb: FormBuilder,

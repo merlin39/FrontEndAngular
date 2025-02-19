@@ -7,10 +7,12 @@
        <div class="sidebar-header">
          <img
            class="logo-form"
-           src="betime2.png"
+           src="/assets/betime2.png"
            alt="logo"
            aria-hidden="true" />
-         <h3 class="F">Forms</h3>
+           <h4 class="F">
+            <mat-icon class="profile-icon">account_circle</mat-icon> {{ adminName }}
+          </h4>
        </div>
        <ul class="menu-list">
         <li><a href="dashboard">Dashboard</a></li>
@@ -28,11 +30,14 @@
         
         <li><a href="reports">Reports</a></li>
         <li><a href="settings">Settings</a></li>
+        <li>
+          <a href="javascript:void(0);" (click)="logout()" class="logout-button">Logout</a>
+        </li>        
+        
       </ul>
      </nav>
    </mat-sidenav>
  
-   <!-- Main Content -->
    <mat-sidenav-content class="content-container">
     <mat-toolbar color="primary" class="toolbar">
       <div class="toolbar-container">
@@ -49,7 +54,6 @@
      <div class="content">
        <div class="table-container">
 
-         <!-- Search Field -->
          <div class="search-container">
           <mat-form-field appearance="outline" class="search-field">
             <mat-label>ค้นหา</mat-label>

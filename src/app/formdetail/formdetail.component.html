@@ -9,8 +9,18 @@
       <div class="question-header">
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>ชื่อแบบฟอร์ม</mat-label>
-          <input matInput placeholder="กรอกชื่อแบบฟอร์ม" formControlName="group_name" required />
-          <mat-error *ngIf="formDetails.get('group_name')?.invalid && formDetails.get('group_name')?.touched">
+          <input
+            matInput
+            placeholder="กรอกชื่อแบบฟอร์ม"
+            formControlName="group_name"
+            required
+          />
+          <mat-error
+            *ngIf="
+              formDetails.get('group_name')?.invalid &&
+              formDetails.get('group_name')?.touched
+            "
+          >
             กรุณากรอกชื่อแบบฟอร์ม
           </mat-error>
         </mat-form-field>
@@ -36,7 +46,6 @@
       class="question-container"
     >
       <div class="question">
-        
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>คำถามที่ {{ i + 1 }}</mat-label>
           <input
@@ -45,44 +54,45 @@
             formControlName="question_text"
             required
           />
-          <mat-error *ngIf="questions.at(i).get('question_text')?.invalid && questions.at(i).get('question_text')?.touched">
+          <mat-error
+            *ngIf="
+              questions.at(i).get('question_text')?.invalid &&
+              questions.at(i).get('question_text')?.touched
+            "
+          >
             กรุณากรอกคำถาม
           </mat-error>
         </mat-form-field>
-
         <div formArrayName="question_options">
-          <div
-            *ngFor="let option of getQuestionOptions(i).controls; let j = index"
-            [formGroupName]="j"
-            class="answer-container"
-          >
-            <mat-radio-group formControlName="is_correct" class="radio-group-inline">
-              <mat-radio-button [value]="true"></mat-radio-button>
-            </mat-radio-group>
-
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>ตัวเลือกที่ {{ j + 1 }}</mat-label>
-              <input
-                matInput
-                placeholder="กรอกคำตอบของคุณ..."
-                formControlName="question_options_text"
-              />
-              <button
-                mat-icon-button
-                matSuffix
-                color="warn"
-                type="button"
-                (click)="removeAnswer(i, j)"
-              >
-                <mat-icon>close</mat-icon>
-              </button>
-            </mat-form-field>
-          </div>
+          <mat-radio-group [formControlName]="'is_correct'">
+            <div
+              *ngFor="let option of getQuestionOptions(i).controls; let j = index"
+              [formGroupName]="j"
+              class="answer-container"
+            >
+              <mat-radio-button [value]="option.get('option_id')?.value">
+              </mat-radio-button>
+        
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>ตัวเลือกที่ {{ j + 1 }}</mat-label>
+                <input matInput placeholder="กรอกคำตอบของคุณ..." formControlName="question_options_text" />
+                <button mat-icon-button matSuffix color="warn" type="button" (click)="removeAnswer(i, j)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+            </div>
+          </mat-radio-group>
         </div>
+        
       </div>
 
       <div class="pum">
-        <button mat-stroked-button color="primary" type="button" (click)="addAnswer(i)">
+        <button
+          mat-stroked-button
+          color="primary"
+          type="button"
+          (click)="addAnswer(i)"
+        >
           เพิ่มคำตอบ
         </button>
         <button
@@ -99,11 +109,14 @@
   </div>
 
   <div class="action-container">
-    <button mat-raised-button color="primary" type="button" (click)="addQuestion()">
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="addQuestion()"
+    >
       + เพิ่มคำถาม
     </button>
-    <button mat-raised-button color="accent" type="submit">
-      ส่งฟอร์ม
-    </button>
+    <button mat-raised-button color="accent" type="submit">ส่งฟอร์ม</button>
   </div>
 </form>

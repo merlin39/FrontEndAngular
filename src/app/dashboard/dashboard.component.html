@@ -58,28 +58,28 @@
        <p *ngIf="!isLoading">Last Updated: {{ lastUpdated }}</p>
  
        <div class="dashboard-cards">
-         <mat-card>
-           <mat-card-title> Users</mat-card-title>
+         <mat-card class="card1">
+           <mat-card-title> ผู้ใช้งาน</mat-card-title>
            <mat-card-content>
              <ng-container *ngIf="!isLoading">
-               {{ count_user !== null && count_user !== undefined ? count_user + ' users' : 'กำลังโหลด...' }}
+               {{ count_user !== null && count_user !== undefined ? count_user + ' คน' : 'กำลังโหลด...' }}
              </ng-container>
            </mat-card-content>
          </mat-card>
  
-         <mat-card>
-           <mat-card-title> Forms</mat-card-title>
+         <mat-card class="card2">
+           <mat-card-title>แบบฟอร์ม</mat-card-title>
            <mat-card-content>
              <ng-container *ngIf="!isLoading">
-               {{ count_form !== null && count_form !== undefined ? count_form + ' Forms' : 'กำลังโหลด...' }}
+               {{ count_form !== null && count_form !== undefined ? count_form + ' แบบ' : 'กำลังโหลด...' }}
              </ng-container>
            </mat-card-content>
          </mat-card>
        </div>
  
        <div class="admin-buttons">
-         <button mat-raised-button color="primary" routerLink="/manage-forms">➕ Add New Quiz</button>
-         <button mat-raised-button color="accent" routerLink="/manage-user">👥 Manage Users</button>
+         <button mat-raised-button color="primary" routerLink="/manage-forms">➕ เพิ่มแบบฟอร์ม</button>
+         <button mat-raised-button color="accent" routerLink="/manage-user">👥 ผู้ใช้งาน</button>
        </div>
      </div>
    </mat-sidenav-content>

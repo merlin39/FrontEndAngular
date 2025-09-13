@@ -81,7 +81,7 @@ export class ManageFormsComponent implements OnInit, AfterViewInit {
     this.fetchData(); 
   }
   fetchAdminName() {
-    const userId = localStorage.getItem('user_id'); // ดึง user_id จาก localStorage
+    const userId = localStorage.getItem('user_id'); 
     if (!userId) {
       console.warn('⚠️ ไม่มี user_id ใน localStorage');
       this.adminName = 'Admin Dashboard';
@@ -90,12 +90,12 @@ export class ManageFormsComponent implements OnInit, AfterViewInit {
   
     this.http.get<any>('http://192.168.10.53:3000/showuser').subscribe(
       (data) => {
+        console.log('✅ API Response จาก showuser:', data);
         if (data && data.users) {
-          // ค้นหาผู้ใช้ที่มี status = 2 และ user_id ตรงกับที่ล็อกอิน
           const adminUser = data.users.find((user: any) => user.status === 2 && user.user_id == userId);
           
           if (adminUser) {
-            this.adminName = adminUser.f_name + ' ' + adminUser.l_name; // รวมชื่อ + นามสกุล
+            this.adminName = adminUser.f_name + ' ' + adminUser.l_name;
           } else {
             console.warn('⚠️ ไม่พบผู้ใช้ที่มีสิทธิ์แอดมิน');
             this.adminName = 'Admin Dashboard';
@@ -111,11 +111,11 @@ export class ManageFormsComponent implements OnInit, AfterViewInit {
       }
     );
   }
-
+  
   fetchData(): void {
     this.http.get<any>('http://192.168.10.53:3000/manage_form').subscribe(
       (response) => {
-        console.log('📢 API Response:', response); 
+        console.log('✅ API Response จาก manage_form:', response);
         
         if (!response || !response.formData || response.formData.length === 0) {
           console.warn('⚠️ API Response ไม่มีข้อมูล หรืออยู่ในรูปแบบที่ผิด');
@@ -135,10 +135,16 @@ export class ManageFormsComponent implements OnInit, AfterViewInit {
       },
       (error) => {
         console.error('❌ Error fetching data:', error);
-        Swal.fire('Error', 'Failed to load data from the server', 'error');
+        if (error.status === 500) {
+          Swal.fire('เซิร์ฟเวอร์มีปัญหา', 'กรุณาติดต่อผู้ดูแลระบบ', 'error');
+        } else {
+          Swal.fire('Error', 'Failed to load data from the server', 'error');
+        }
       }
     );
   }
+  
+  
 
   toggleSidebar() {
     this.sidenav.toggle();

@@ -1,40 +1,41 @@
 <div class="form-header">
-  <button mat-icon-button (click)="goBack()">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
-  <h1>แก้ไขข้อมูลผู้ใช้</h1>
+  <span class="back-arrow" (click)="goBack()">&lt;</span>
+  <h1>{{ formTitle }}</h1>
 </div>
 
 <div class="content-area">
   <form [formGroup]="userForm" (ngSubmit)="submitUser()">
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>ชื่อ - นามสกุล</mat-label>
-      <input
-        matInput
-        placeholder="กรอกชื่อและนามสกุล"
-        formControlName="full_name"
-        required
-      />
-    </mat-form-field>
-    <label for="email">อีเมล</label>
-    <mat-form-field appearance="outline" class="full-width">
-      <input
-        matInput
-        placeholder="กรอกอีเมล"
-        formControlName="email"
-        required
-      />
-    </mat-form-field>
-    <label for="status">สถานะ</label>
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-select formControlName="status">
-        <mat-option [value]="1">Active</mat-option>
-        <mat-option [value]="0">Inactive</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <div class="action-container">
-      <button mat-raised-button color="primary" type="submit">บันทึก</button>
+    
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-spinner">
+      <mat-spinner></mat-spinner>
+      <p>กำลังโหลดข้อมูล...</p>
     </div>
+
+    <div *ngIf="!isLoading">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>ชื่อ - นามสกุล</mat-label>
+        <input matInput placeholder="กรอกชื่อและนามสกุล" formControlName="full_name" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>อีเมล</mat-label>
+        <input matInput placeholder="กรอกอีเมล" formControlName="email" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>สถานะ</mat-label>
+        <mat-select formControlName="status">
+          <mat-option [value]="0">แบน</mat-option>
+          <mat-option [value]="1">ใช้งานได้ปกติ</mat-option>
+          <mat-option [value]="2">แอดมิน</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="action-container">
+        <button mat-raised-button color="primary" type="submit">บันทึก</button>
+      </div>
+    </div>
+
   </form>
 </div>

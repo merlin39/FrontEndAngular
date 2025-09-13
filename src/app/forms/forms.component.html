@@ -22,7 +22,6 @@
     </div>
   </form>
 </div>
-
 <form [formGroup]="form" (ngSubmit)="submitForm()">
   <div formArrayName="questions">
     <div *ngFor="let question of questions.controls; let i = index" [formGroupName]="i" class="question-container">
@@ -38,7 +37,7 @@
         <div formArrayName="question_options">
           <div *ngFor="let option of getQuestionOptions(i).controls; let j = index" [formGroupName]="j" class="answer-container">
             <mat-radio-group formControlName="is_correct" class="radio-group-inline">
-              <mat-radio-button [value]="1"></mat-radio-button>
+              <mat-radio-button [value]="true"></mat-radio-button>
             </mat-radio-group>
 
             <mat-form-field appearance="outline" class="full-width">

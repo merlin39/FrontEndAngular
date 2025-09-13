@@ -1,4 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { 
+  Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef 
+} from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -21,6 +23,13 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+
+enum UserStatus {
+  แบน = 0, 
+  ใช้งานได้ปกติ = 1,  
+  แอดมิน = 2,   
+}
+
 interface User {
   user_id: number;
   f_name: string;
@@ -40,7 +49,6 @@ interface UserTableData {
 @Component({
   selector: 'app-manage-user',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  // ใช้ imports เป็น array ของ module ที่ต้องการ
   imports: [
     MatToolbarModule,
     MatSidenavModule,
@@ -62,7 +70,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<UserTableData>([]);
   activeMenu: string | null = null;
   isSmallScreen = false;
-  adminName: string = 'Admin Name';
+  adminName: string = 'Admin Dashboard';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -73,11 +81,13 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   constructor(
     private http: HttpClient,
     private breakpointObserver: BreakpointObserver,
-    private router: Router
+    private router: Router,
+    private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.adminName = localStorage.getItem('admin_name') ?? 'Admin Dashboard';
+  
     this.breakpointObserver.observe([Breakpoints.Handset])
       .pipe(takeUntil(this.destroy$))
       .subscribe(result => {
@@ -87,30 +97,27 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     this.loadUserData();
     this.fetchAdminName();
   }
+
   fetchAdminName() {
-    const userId = localStorage.getItem('user_id'); // ดึง user_id จาก localStorage
+    const userId = Number(localStorage.getItem('user_id')); // แปลงเป็นตัวเลข
     if (!userId) {
       console.warn('⚠️ ไม่มี user_id ใน localStorage');
       this.adminName = 'Admin Dashboard';
       return;
     }
-  
-    this.http.get<any>('http://192.168.10.53:3000/showuser').subscribe(
+
+    this.http.get<{ users: User[] }>('http://192.168.10.53:3000/showuser').subscribe(
       (data) => {
-        if (data && data.users) {
-          // ค้นหาผู้ใช้ที่มี status = 2 และ user_id ตรงกับที่ล็อกอิน
-          const adminUser = data.users.find((user: any) => user.status === 2 && user.user_id == userId);
-          
-          if (adminUser) {
-            this.adminName = adminUser.f_name + ' ' + adminUser.l_name; // รวมชื่อ + นามสกุล
-          } else {
-            console.warn('⚠️ ไม่พบผู้ใช้ที่มีสิทธิ์แอดมิน');
-            this.adminName = 'Admin Dashboard';
-          }
-        } else {
-          console.error('❌ Error: API Response ไม่ถูกต้อง', data);
-          this.adminName = 'Admin Dashboard';
+        if (!data || !Array.isArray(data.users)) {
+          console.error('❌ Invalid API response:', data);
+          return;
         }
+
+        const adminUser = data.users.find(
+          (user: User) => user.status === UserStatus.แอดมิน && user.user_id === userId
+        );
+
+        this.adminName = adminUser ? `${adminUser.f_name} ${adminUser.l_name}` : 'Admin Dashboard';
       },
       (error) => {
         console.error('❌ Error fetching admin name:', error);
@@ -131,27 +138,19 @@ export class ManageUserComponent implements OnInit, OnDestroy {
           id: user.user_id,
           name: `${user.f_name} ${user.l_name}`,
           email: user.email,
-          status: this.getStatusText(user.status),
+          status: UserStatus[user.status] ?? 'Unknown',
         }));
+        
         this.dataSource.data = formattedData;
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+
+        this.cdRef.markForCheck();
       },
       error: (error) => {
         console.error('Error fetching user data:', error);
       }
     });
-  }
-
-  getStatusText(status: number): string {
-    switch (status) {
-      case 1:
-        return 'Active';
-      case 2:
-        return 'Inactive';
-      default:
-        return 'Unknown';
-    }
   }
 
   toggleSidebar(): void {
@@ -184,17 +183,10 @@ export class ManageUserComponent implements OnInit, OnDestroy {
       cancelButtonText: 'ยกเลิก'
     }).then((result) => {
       if (result.isConfirmed) {
-        const updateUrl = `http://192.168.10.53:3000/delete_user/${element.id}`;
-        this.http.put(updateUrl, { status: 0 }).subscribe({
-          next: (res) => {
-            this.dataSource.data = this.dataSource.data.filter(
-              (item: any) => item.id !== element.id
-            );
-            Swal.fire(
-              'ลบสำเร็จ!',
-              'ข้อมูลผู้ใช้งานถูกลบเรียบร้อย',
-              'success'
-            );
+        this.http.put(`http://192.168.10.53:3000/delete_user/${element.id}`, { status: UserStatus.แบน }).subscribe({
+          next: () => {
+            this.dataSource.data = this.dataSource.data.filter(item => item.id !== element.id);
+            Swal.fire('ลบสำเร็จ!', 'ข้อมูลผู้ใช้งานถูกลบเรียบร้อย', 'success');
           },
           error: (error) => {
             console.error('Error deleting user:', error);
@@ -204,17 +196,18 @@ export class ManageUserComponent implements OnInit, OnDestroy {
       }
     });
   }
-    logout() {
-      localStorage.removeItem('user_id');
-      localStorage.removeItem('token');
-  
-      Swal.fire({
-        title: 'Logout',
-        text: 'You have been logged out successfully.',
-        icon: 'success',
-        confirmButtonText: 'OK'
-      }).then(() => {
-        window.location.href = '/login-admin';
-      });
-    }
+
+  logout(): void {
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('token');
+
+    Swal.fire({
+      title: 'Logout',
+      text: 'You have been logged out successfully.',
+      icon: 'success',
+      confirmButtonText: 'OK'
+    }).then(() => {
+      this.router.navigate(['/login-admin']);
+    });
+  }
 }

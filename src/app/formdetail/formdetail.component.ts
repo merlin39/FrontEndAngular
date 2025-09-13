@@ -111,19 +111,20 @@ export class FormdetailComponent implements OnInit {
   createQuestionGroup(question: any = {}): FormGroup {
     return this.fb.group({
       question_id: [question.question_id || null],
-      question_type: [question.question_type || ''],
       question_text: [question.question_text || '', Validators.required],
+      is_correct: [question.is_correct || null], // ✅ ใช้ option_id ของตัวเลือกที่ถูกต้อง
       question_options: this.fb.array(
         (question.question_options || []).map((option: any) => this.createOptionGroup(option))
-      ),
+      )
     });
   }
   
+
   createOptionGroup(option: any = {}): FormGroup {
     return this.fb.group({
       option_id: [option.option_id || null],
       question_options_text: [option.question_options_text || '', Validators.required],
-      is_correct: [option.is_correct ?? false],
+      is_correct: [option.is_correct ?? false], // ✅ ต้องแน่ใจว่า is_correct มีค่าเสมอ
     });
   }
   
@@ -132,29 +133,37 @@ export class FormdetailComponent implements OnInit {
     this.http.get<any>(`${this.apiUrl}/manage_form`).subscribe(
       (response) => {
         console.log('✅ API Response:', response);
-
+  
         if (response && response.formData) {
           const form = response.formData.find((item: any) => item.group_id == this.groupId);
           if (form) {
             console.log('✅ ฟอร์มที่โหลด:', form);
-
+  
             this.formDetails.patchValue({
               group_name: form.group_name || '',
               group_description: form.group_description || '',
             });
-
+  
             const questionsArray = this.form.get('questions') as FormArray;
             questionsArray.clear();
-            
-            if (form.question_text) {
-              const questionData = {
-                question_text: form.question_text,
-                question_options: [
-                  { question_options_text: form.question_options_text }
-                ]
-              };
-              console.log('📌 เพิ่มคำถามเข้า FormArray:', questionData);
-              questionsArray.push(this.createQuestionGroup(questionData));
+  
+            if (form.questions && form.questions.length > 0) {
+              form.questions.forEach((question: any) => {
+                // หา option_id ของตัวเลือกที่ถูกต้อง
+                const correctOptionId = question.options.find((opt: any) => opt.is_correct)?.option_id || null;
+  
+                const questionData = {
+                  question_id: question.question_id,
+                  question_text: question.question_text,
+                  is_correct: correctOptionId, // ✅ ใช้ option_id ของตัวเลือกที่ถูกต้อง
+                  question_options: question.options.map((option: any) => ({
+                    option_id: option.option_id,
+                    question_options_text: option.option_text
+                  }))
+                };
+                console.log('📌 เพิ่มคำถามเข้า FormArray:', questionData);
+                questionsArray.push(this.createQuestionGroup(questionData));
+              });
             } else {
               console.warn('⚠️ ไม่มีคำถามใน API Response');
             }
@@ -171,55 +180,55 @@ export class FormdetailComponent implements OnInit {
       }
     );
   }
-
+  
   submitForm() {
-
-    if (this.form.invalid || this.formDetails.invalid) {
-      this.showModal('กรุณากรอกข้อมูลให้ครบ', 'warning');
-      return;
-    }
-
-    console.log('🔍 ตรวจสอบ groupId ก่อนส่ง API:', this.groupId);
-    if (!this.groupId) {
-      this.showModal('เกิดข้อผิดพลาด: ไม่มี Group ID', 'error');
-      return;
-    }
-
-    const formData = {
-      group_id: this.groupId, 
-      group_name: this.formDetails.get('group_name')?.value.trim(),
-      group_description: this.formDetails.get('group_description')?.value.trim() || '',
-      questions: this.questions.value.map((question: any) => ({
-        question_text: question.question_text?.trim(),
-        question_options: (question.question_options || []).map((option: any) => ({
-          question_options_text: option.question_options_text?.trim(),
-          is_correct: option.is_correct ?? false,
-        })),
-      })),
-    };
-
-    console.log('📌 Data ที่จะส่งไปยัง API:', JSON.stringify(formData, null, 2));
-
-    if (!formData.questions || formData.questions.length === 0) {
-      console.error('❌ ข้อมูล questions ว่างเปล่า!');
-      this.showModal('กรุณาเพิ่มคำถามก่อนส่งฟอร์ม', 'error');
-      return;
-    }
-
-    const apiUrl = `${this.apiUrl}/update_form/${this.groupId}`;
-    this.http.put(apiUrl, formData).subscribe(
-      (response) => {
-        console.log('✅ Form updated successfully:', response);
-        this.showModal('อัปเดตข้อมูลสำเร็จ', 'success');
-        this.router.navigate(['/manage-forms']);
-      },
-      (error) => {
-        console.error('❌ Error updating form:', error);
-        this.showModal(`เกิดข้อผิดพลาด: ${error.message}`, 'error');
-      }
-    );
+  if (this.form.invalid || this.formDetails.invalid) {
+    this.showModal('กรุณากรอกข้อมูลให้ครบ', 'warning');
+    return;
   }
 
+  console.log('🔍 ตรวจสอบ groupId ก่อนส่ง API:', this.groupId);
+  if (!this.groupId) {
+    this.showModal('เกิดข้อผิดพลาด: ไม่มี Group ID', 'error');
+    return;
+  }
+
+  const formData = {
+    group_id: this.groupId, 
+    group_name: this.formDetails.get('group_name')?.value.trim(),
+    group_description: this.formDetails.get('group_description')?.value.trim() || '',
+    questions: this.questions.value.map((question: any) => ({
+      question_text: question.question_text?.trim(),
+      question_options: (question.question_options || []).map((option: any) => ({
+        question_options_text: option.question_options_text?.trim(),
+        is_correct: option.is_correct // ✅ ต้องแน่ใจว่า is_correct ถูกส่งไป
+      }))
+    }))
+  };
+
+  console.log('📌 Data ที่จะส่งไปยัง API:', JSON.stringify(formData, null, 2));
+
+  if (!formData.questions || formData.questions.length === 0) {
+    console.error('❌ ข้อมูล questions ว่างเปล่า!');
+    this.showModal('กรุณาเพิ่มคำถามก่อนส่งฟอร์ม', 'error');
+    return;
+  }
+
+  const apiUrl = `${this.apiUrl}/update_form/${this.groupId}`;
+  this.http.put(apiUrl, formData).subscribe(
+    (response) => {
+      console.log('✅ Form updated successfully:', response);
+      this.showModal('อัปเดตข้อมูลสำเร็จ', 'success');
+      this.router.navigate(['/manage-forms']);
+    },
+    (error) => {
+      console.error('❌ Error updating form:', error);
+      this.showModal(`เกิดข้อผิดพลาด: ${error.message}`, 'error');
+    }
+  );
+}
+
+  
   showModal(message: string, icon: 'success' | 'error' | 'warning' = 'warning') {
     Swal.fire({
       title: message,

@@ -14,7 +14,7 @@
             <mat-icon class="profile-icon">account_circle</mat-icon> {{ adminName }}
           </h4>
        </div>
-       <ul class="menu-list">
+       <ul class="menu-list">''
         <li><a href="dashboard">Dashboard</a></li>
         <li>
           <a (click)="toggleSubmenu('components')" class="menu-item">
@@ -48,9 +48,10 @@
           *ngIf="isSmallScreen">
           <mat-icon>menu</mat-icon>
         </button>
-        <span class="title">Management (Forms)</span>
+        <span class="title">Management Forms</span>
       </div>
     </mat-toolbar>
+
     
      <div class="content">
        <div class="table-container">

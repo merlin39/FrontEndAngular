@@ -108,40 +108,66 @@ export class FormsComponent {
   createOptionGroup(): FormGroup {
     return this.fb.group({
       question_options_text: ['', Validators.required],
-      is_correct: [0]
+      is_correct: [false]
     }, { updateOn: 'change' });
   }
 
   submitForm() {
-    console.log('ค่าของฟอร์มที่กำลังส่ง:', JSON.stringify(this.form.value, null, 2));
-  
-    const userId = this.authService.getUserId() || localStorage.getItem('user_id');
+    console.log('✅ ค่าของฟอร์มที่กำลังส่ง:', JSON.stringify(this.form.value, null, 2));
+
+    const userIdString = this.authService.getUserId() || localStorage.getItem('user_id');
+    const userId = parseInt(userIdString || '0', 10);
+
     if (!userId) {
       this.showModal('กรุณาเข้าสู่ระบบก่อนส่งฟอร์ม', 'error');
       return;
     }
-  
+
     const groupName = this.formDetails.get('group_name')?.value?.trim();
     if (!groupName) {
       this.showModal('กรุณากรอกชื่อแบบฟอร์ม', 'error');
       return;
     }
-  
+
+    const groupDescription = this.formDetails.get('group_description')?.value?.trim() || '';
+
+    // ✅ ตรวจสอบว่ามีคำถามและตัวเลือกคำตอบ
+    if (this.questions.length === 0) {
+      this.showModal('ต้องมีอย่างน้อย 1 คำถาม', 'error');
+      return;
+    }
+
+    for (let i = 0; i < this.questions.length; i++) {
+      const question = this.questions.at(i);
+      if (!question.value.question_text.trim()) {
+        this.showModal(`กรุณากรอกคำถามที่ ${i + 1}`, 'error');
+        return;
+      }
+      if (question.value.question_options.length === 0) {
+        this.showModal(`ต้องมีคำตอบอย่างน้อย 1 ตัวเลือกในคำถามที่ ${i + 1}`, 'error');
+        return;
+      }
+    }
+
+    // ✅ แปลงค่าข้อมูลให้ตรงกับ Backend
     const formData = {
       user_id: userId,
       group_name: groupName,
-      group_description: this.formDetails.get('group_description')?.value?.trim() || '',
+      group_description: groupDescription,
       questions: this.questions.value.map((question: any) => ({
-        question_text: question.question_text?.trim() || '',
+        question_text: question.question_text?.trim() || 'Untitled Question',
         question_type: question.question_type || 'multiple choice',
         status: question.status === true,
         question_options: question.question_options?.map((option: any) => ({
-          question_options_text: option.question_options_text?.trim() || '',
-          is_correct: option.is_correct === true
+          question_options_text: option.question_options_text?.trim() || 'Default Option',
+          is_correct: option.is_correct ? true : false
+
         }))
       }))
     };
-  
+
+    console.log('✅ JSON Data ที่จะส่งไป Backend:', JSON.stringify(formData, null, 2));
+
     fetch(this.apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -149,26 +175,28 @@ export class FormsComponent {
     })
       .then(response => {
         if (!response.ok) {
-          return response.json().then(err => { throw new Error(err.error || `HTTP error! status: ${response.status}`); });
+          return response.json().then(err => { 
+            throw new Error(err.error || `HTTP error! status: ${response.status}`); 
+          });
         }
         return response.json();
       })
       .then(data => {
         console.log('✅ ส่งฟอร์มสำเร็จ:', data);
         this.showModal('ส่งข้อมูลสำเร็จ', 'success');
-  
+
         setTimeout(() => {
           this.router.navigate(['/manage-forms']).then(() => {
-            window.location.reload(); 
+            window.location.reload();
           });
-        }, 1500); 
+        }, 1500);
       })
       .catch(error => {
         console.error('❌ เกิดข้อผิดพลาด:', error);
         this.showModal(`เกิดข้อผิดพลาด: ${error.message}`, 'error');
       });
   }
-  
+
   showModal(message: string, icon: 'success' | 'error' | 'warning' = 'warning') {
     Swal.fire({
       title: message,
